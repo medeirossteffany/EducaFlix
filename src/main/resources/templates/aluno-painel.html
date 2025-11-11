@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>EducaFlix - Painel do Aluno</title>
+</head>
+<body>
+<h1>EducaFlix - Aluno</h1>
+<nav>
+    <a href="/aluno/dashboard">Painel</a> |
+    <a href="/aluno/meus-cursos">Meus Cursos</a> |
+    <a href="/aluno/perfil">Meu Perfil</a> |
+    <a href="/logout">Sair</a>
+</nav>
+<hr>
+
+<h2>Trilhas disponíveis</h2>
+<table border="1">
+    <tr>
+        <th>Título</th>
+        <th>Categoria</th>
+        <th>Nível</th>
+        <th>Ação</th>
+    </tr>
+    <!-- Exemplo estático; no Thymeleaf, faria um loop th:each -->
+    <tr th:each="trilha : ${trilhas}">
+        <td th:text="${trilha.titulo}">Título</td>
+        <td th:text="${trilha.categoria}">Categoria</td>
+        <td th:text="${trilha.nivel}">Nível</td>
+        <td>
+            <form method="post" th:action="@{'/aluno/trilhas/' + ${trilha.id} + '/inscrever'}">
+                <button type="submit">Inscreva-se</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

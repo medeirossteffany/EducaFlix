@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>EducaFlix - Alunos Inscritos</title>
+</head>
+<body>
+<h1>EducaFlix - Profissional</h1>
+<nav>
+  <a href="/profissional/dashboard">Trilhas</a> |
+  <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
+  <a href="/profissional/perfil">Meu Perfil</a> |
+  <a href="/logout">Sair</a>
+</nav>
+<hr>
+
+<h2>Alunos inscritos nas minhas trilhas</h2>
+<table border="1">
+  <tr>
+    <th>Aluno</th>
+    <th>Trilha</th>
+    <th>Status</th>
+  </tr>
+  <tr th:each="inscricao : ${inscricoes}">
+    <td th:text="${inscricao.aluno.nome}">Aluno</td>
+    <td th:text="${inscricao.trilha.titulo}">Trilha</td>
+    <td th:text="${inscricao.status}">Status</td>
+  </tr>
+</table>
+</body>
+</html>

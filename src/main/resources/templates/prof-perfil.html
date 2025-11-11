@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>EducaFlix - Meu Perfil (Profissional)</title>
+</head>
+<body>
+<h1>EducaFlix - Profissional</h1>
+<nav>
+  <a href="/profissional/dashboard">Trilhas</a> |
+  <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
+  <a href="/profissional/perfil">Meu Perfil</a> |
+  <a href="/logout">Sair</a>
+</nav>
+<hr>
+
+<h2>Meu Perfil</h2>
+<form method="post" action="/profissional/perfil">
+  <label>Nome:</label><br>
+  <input type="text" name="nome" th:value="${profissional.nome}" required><br><br>
+
+  <label>Email:</label><br>
+  <input type="email" name="email" th:value="${profissional.email}" required><br><br>
+
+  <label>Área de atuação:</label><br>
+  <input type="text" name="areaAtuacao" th:value="${profissional.areaAtuacao}"><br><br>
+
+  <label>Código do Professor:</label><br>
+  <input type="text" name="codigoProfessor" th:value="${profissional.codigoProfessor}"><br><br>
+
+  <button type="submit">Salvar alterações</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro - EducaFlix</title>
+</head>
+<body>
+<h1>EducaFlix</h1>
+<h2>Cadastro</h2>
+
+<form method="post" action="/cadastro">
+  <label>Tipo de usuário:</label><br>
+  <select id="role" name="role">
+    <option value="ALUNO">Aluno</option>
+    <option value="PROFISSIONAL">Profissional</option>
+  </select><br><br>
+
+  <label>Nome completo:</label><br>
+  <input type="text" name="nome" required><br><br>
+
+  <label>Email:</label><br>
+  <input type="email" name="email" required><br><br>
+
+  <label>Senha:</label><br>
+  <input type="password" name="senha" required><br><br>
+
+  <div id="campos-aluno">
+    <label>CPF:</label><br>
+    <input type="text" name="cpf"><br><br>
+
+    <label>Área de interesse:</label><br>
+    <input type="text" name="areaInteresse"><br><br>
+  </div>
+
+  <div id="campos-profissional" style="display:none;">
+    <label>Área de atuação:</label><br>
+    <input type="text" name="areaAtuacao"><br><br>
+
+    <label>Código do Professor:</label><br>
+    <input type="text" name="codigoProfessor"><br><br>
+  </div>
+
+  <button type="submit">Cadastrar</button>
+</form>
+
+<p>Já tem conta? <a href="/login">Entrar</a></p>
+
+<script>
+  const roleSelect = document.getElementById('role');
+  const alunoDiv = document.getElementById('campos-aluno');
+  const profDiv = document.getElementById('campos-profissional');
+
+  roleSelect.addEventListener('change', function () {
+    if (this.value === 'ALUNO') {
+      alunoDiv.style.display = 'block';
+      profDiv.style.display = 'none';
+    } else {
+      alunoDiv.style.display = 'none';
+      profDiv.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>EducaFlix - Meus Cursos</title>
+</head>
+<body>
+<h1>EducaFlix - Aluno</h1>
+<nav>
+    <a href="/aluno/dashboard">Painel</a> |
+    <a href="/aluno/meus-cursos">Meus Cursos</a> |
+    <a href="/aluno/perfil">Meu Perfil</a> |
+    <a href="/logout">Sair</a>
+</nav>
+<hr>
+
+<h2>Meus cursos</h2>
+<table border="1">
+    <tr>
+        <th>Trilha</th>
+        <th>Status</th>
+        <th>Ação</th>
+    </tr>
+    <tr th:each="inscricao : ${inscricoes}">
+        <td th:text="${inscricao.trilha.titulo}">Trilha X</td>
+        <td th:text="${inscricao.status}">EM_ANDAMENTO</td>
+        <td>
+            <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}">
+                <button type="submit" th:if="${inscricao.status == 'EM_ANDAMENTO'}">Finalizar</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

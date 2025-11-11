@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>EducaFlix - Meu Perfil (Aluno)</title>
+</head>
+<body>
+<h1>EducaFlix - Aluno</h1>
+<nav>
+  <a href="/aluno/dashboard">Painel</a> |
+  <a href="/aluno/meus-cursos">Meus Cursos</a> |
+  <a href="/aluno/perfil">Meu Perfil</a> |
+  <a href="/logout">Sair</a>
+</nav>
+<hr>
+
+<h2>Meu Perfil</h2>
+<form method="post" action="/aluno/perfil">
+  <label>Nome:</label><br>
+  <input type="text" name="nome" th:value="${aluno.nome}" required><br><br>
+
+  <label>Email:</label><br>
+  <input type="email" name="email" th:value="${aluno.email}" required><br><br>
+
+  <label>CPF:</label><br>
+  <input type="text" name="cpf" th:value="${aluno.cpf}"><br><br>
+
+  <label>Área de interesse:</label><br>
+  <input type="text" name="areaInteresse" th:value="${aluno.areaInteresse}"><br><br>
+
+  <button type="submit">Salvar alterações</button>
+</form>
+</body>
+</html>
