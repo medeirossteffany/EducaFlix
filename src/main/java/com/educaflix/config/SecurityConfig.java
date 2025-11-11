@@ -2,7 +2,6 @@ package com.educaflix.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +16,7 @@ public class SecurityConfig {
                 // Desativa autenticações padrões do Spring
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(basic -> basic.disable()) // CORRIGIDO: desabilitar httpBasic
                 .logout(logout -> logout.disable())
 
                 // Define as permissões

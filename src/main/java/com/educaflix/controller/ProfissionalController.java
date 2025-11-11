@@ -50,6 +50,15 @@ public class ProfissionalController {
         return "redirect:/profissional/dashboard";
     }
 
+    // NOVO: Endpoint para editar trilha
+    @PostMapping("/trilhas/{id}/editar")
+    public String editarTrilha(@PathVariable Long id, Trilha trilha, HttpSession session) {
+        Usuario prof = getProfLogado(session);
+        trilha.setProfissionalId(prof.getId());
+        trilhaService.atualizar(id, trilha);
+        return "redirect:/profissional/dashboard";
+    }
+
     @PostMapping("/trilhas/{id}/excluir")
     public String excluirTrilha(@PathVariable Long id, HttpSession session) {
         getProfLogado(session);
@@ -63,6 +72,14 @@ public class ProfissionalController {
         Usuario prof = getProfLogado(session);
         model.addAttribute("inscricoes", inscricaoService.listarPorProfissional(prof.getId()));
         return "prof-alunos-inscritos";
+    }
+
+    // NOVO: Endpoint para remover inscrição de aluno
+    @PostMapping("/inscricoes/{id}/remover")
+    public String removerInscricao(@PathVariable Long id, HttpSession session) {
+        getProfLogado(session);
+        inscricaoService.remover(id);
+        return "redirect:/profissional/alunos-inscritos";
     }
 
     // Página 3 - Perfil

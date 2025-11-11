@@ -1,38 +1,71 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>EducaFlix - Painel do Aluno</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #2196F3;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
 </head>
 <body>
-<h1>EducaFlix - Aluno</h1>
+<h1>EducaFlix - Painel do Aluno</h1>
 <nav>
-    <a href="/aluno/dashboard">Painel</a> |
+    <a href="/aluno/dashboard">Explorar Trilhas</a> |
     <a href="/aluno/meus-cursos">Meus Cursos</a> |
     <a href="/aluno/perfil">Meu Perfil</a> |
-    <a href="/logout">Sair</a>
+    <a href="/login">Sair</a>
 </nav>
 <hr>
 
-<h2>Trilhas disponíveis</h2>
-<table border="1">
+<h2>Trilhas disponíveis para inscrição</h2>
+<table>
+    <thead>
     <tr>
         <th>Título</th>
+        <th>Descrição</th>
         <th>Categoria</th>
         <th>Nível</th>
+        <th>Carga Horária</th>
         <th>Ação</th>
     </tr>
-    <!-- Exemplo estático; no Thymeleaf, faria um loop th:each -->
+    </thead>
+    <tbody>
     <tr th:each="trilha : ${trilhas}">
-        <td th:text="${trilha.titulo}">Título</td>
+        <td><strong th:text="${trilha.titulo}">Título</strong></td>
+        <td th:text="${trilha.descricao}">Descrição</td>
         <td th:text="${trilha.categoria}">Categoria</td>
         <td th:text="${trilha.nivel}">Nível</td>
+        <td th:text="${trilha.cargaHoraria} + 'h'">Carga</td>
         <td>
             <form method="post" th:action="@{'/aluno/trilhas/' + ${trilha.id} + '/inscrever'}">
-                <button type="submit">Inscreva-se</button>
+                <button type="submit">Inscrever-se</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
+
+<p th:if="${trilhas == null || trilhas.isEmpty()}">Nenhuma trilha disponível no momento.</p>
+
 </body>
 </html>

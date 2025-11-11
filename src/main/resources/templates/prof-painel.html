@@ -1,58 +1,152 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>EducaFlix - Painel do Profissional</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .form-inline {
+            display: inline-block;
+            margin: 0 5px;
+        }
+        .edit-form {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+        }
+        .edit-form.active {
+            display: block;
+        }
+    </style>
+    <script>
+        function toggleEdit(id) {
+            var form = document.getElementById('edit-form-' + id);
+            if (form.classList.contains('active')) {
+                form.classList.remove('active');
+            } else {
+                // Esconde todos os outros formulários
+                var allForms = document.querySelectorAll('.edit-form');
+                allForms.forEach(function(f) {
+                    f.classList.remove('active');
+                });
+                form.classList.add('active');
+            }
+        }
+    </script>
 </head>
 <body>
-<h1>EducaFlix - Profissional</h1>
+<h1>EducaFlix - Painel do Profissional</h1>
 <nav>
     <a href="/profissional/dashboard">Trilhas</a> |
     <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
     <a href="/profissional/perfil">Meu Perfil</a> |
-    <a href="/logout">Sair</a>
+    <a href="/login">Sair</a>
 </nav>
 <hr>
 
 <h2>Criar nova trilha</h2>
 <form method="post" action="/profissional/trilhas">
     <label>Título:</label><br>
-    <input type="text" name="titulo" required><br><br>
+    <input type="text" name="titulo" required style="width: 400px;"><br><br>
 
     <label>Descrição:</label><br>
-    <textarea name="descricao" required></textarea><br><br>
+    <textarea name="descricao" required style="width: 400px; height: 80px;"></textarea><br><br>
 
     <label>Categoria:</label><br>
-    <input type="text" name="categoria" required><br><br>
+    <input type="text" name="categoria" required style="width: 400px;"><br><br>
 
-    <label>Carga Horária:</label><br>
-    <input type="number" name="cargaHoraria" required><br><br>
+    <label>Carga Horária (horas):</label><br>
+    <input type="number" name="cargaHoraria" required style="width: 400px;"><br><br>
 
     <label>Nível:</label><br>
-    <input type="text" name="nivel" required><br><br>
+    <select name="nivel" required style="width: 400px;">
+        <option value="INICIANTE">Iniciante</option>
+        <option value="INTERMEDIARIO">Intermediário</option>
+        <option value="AVANCADO">Avançado</option>
+    </select><br><br>
 
     <button type="submit">Criar trilha</button>
 </form>
 
 <h2>Minhas trilhas</h2>
-<table border="1">
+<table>
+    <thead>
     <tr>
         <th>Título</th>
         <th>Categoria</th>
         <th>Nível</th>
+        <th>Carga Horária</th>
         <th>Ações</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="trilha : ${trilhas}">
-        <td th:text="${trilha.titulo}">Título</td>
+        <td>
+            <strong th:text="${trilha.titulo}">Título</strong>
+            <br>
+            <small th:text="${trilha.descricao}">Descrição</small>
+
+            <!-- Formulário de edição (oculto por padrão) -->
+            <div th:id="'edit-form-' + ${trilha.id}" class="edit-form">
+                <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/editar'}">
+                    <label>Título:</label><br>
+                    <input type="text" name="titulo" th:value="${trilha.titulo}" required style="width: 100%;"><br><br>
+
+                    <label>Descrição:</label><br>
+                    <textarea name="descricao" required style="width: 100%; height: 60px;" th:text="${trilha.descricao}"></textarea><br><br>
+
+                    <label>Categoria:</label><br>
+                    <input type="text" name="categoria" th:value="${trilha.categoria}" required style="width: 100%;"><br><br>
+
+                    <label>Carga Horária:</label><br>
+                    <input type="number" name="cargaHoraria" th:value="${trilha.cargaHoraria}" required style="width: 100%;"><br><br>
+
+                    <label>Nível:</label><br>
+                    <select name="nivel" required style="width: 100%;">
+                        <option value="INICIANTE" th:selected="${trilha.nivel == 'INICIANTE'}">Iniciante</option>
+                        <option value="INTERMEDIARIO" th:selected="${trilha.nivel == 'INTERMEDIARIO'}">Intermediário</option>
+                        <option value="AVANCADO" th:selected="${trilha.nivel == 'AVANCADO'}">Avançado</option>
+                    </select><br><br>
+
+                    <button type="submit">Salvar alterações</button>
+                    <button type="button" th:onclick="'toggleEdit(' + ${trilha.id} + ')'">Cancelar</button>
+                </form>
+            </div>
+        </td>
         <td th:text="${trilha.categoria}">Categoria</td>
         <td th:text="${trilha.nivel}">Nível</td>
+        <td th:text="${trilha.cargaHoraria} + 'h'">Carga</td>
         <td>
-            <!-- Para simplificar, só excluir -->
-            <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/excluir'}">
+            <button type="button" th:onclick="'toggleEdit(' + ${trilha.id} + ')'" class="form-inline">Editar</button>
+
+            <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/excluir'}" class="form-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta trilha?');">
                 <button type="submit">Excluir</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
+
+<p th:if="${trilhas == null || trilhas.isEmpty()}">Você ainda não criou nenhuma trilha.</p>
+
 </body>
 </html>

@@ -61,4 +61,11 @@ public class InscricaoService {
         }
         return repo.findByTrilhaIn(trilhas);
     }
+
+    // NOVO: Método para remover inscrição
+    public void remover(Long inscricaoId) {
+        Inscricao i = repo.findById(inscricaoId)
+                .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
+        repo.delete(i);
+    }
 }

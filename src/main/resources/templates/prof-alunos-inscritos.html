@@ -1,31 +1,81 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>EducaFlix - Alunos Inscritos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .status-em-andamento {
+      color: #FF9800;
+      font-weight: bold;
+    }
+    .status-finalizada {
+      color: #4CAF50;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-<h1>EducaFlix - Profissional</h1>
+<h1>EducaFlix - Painel do Profissional</h1>
 <nav>
   <a href="/profissional/dashboard">Trilhas</a> |
   <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
   <a href="/profissional/perfil">Meu Perfil</a> |
-  <a href="/logout">Sair</a>
+  <a href="/login">Sair</a>
 </nav>
 <hr>
 
 <h2>Alunos inscritos nas minhas trilhas</h2>
-<table border="1">
+<table>
+  <thead>
   <tr>
     <th>Aluno</th>
+    <th>Email</th>
     <th>Trilha</th>
     <th>Status</th>
+    <th>Ações</th>
   </tr>
+  </thead>
+  <tbody>
   <tr th:each="inscricao : ${inscricoes}">
-    <td th:text="${inscricao.aluno.nome}">Aluno</td>
-    <td th:text="${inscricao.trilha.titulo}">Trilha</td>
-    <td th:text="${inscricao.status}">Status</td>
+    <td th:text="${inscricao.aluno.nome}">Nome do Aluno</td>
+    <td th:text="${inscricao.aluno.email}">email@exemplo.com</td>
+    <td th:text="${inscricao.trilha.titulo}">Título da Trilha</td>
+    <td>
+      <span th:class="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
+            th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
+        Status
+      </span>
+    </td>
+    <td>
+      <form method="post" th:action="@{'/profissional/inscricoes/' + ${inscricao.id} + '/remover'}"
+            style="display: inline-block;"
+            onsubmit="return confirm('Tem certeza que deseja remover a inscrição deste aluno?');">
+        <button type="submit">Remover Inscrição</button>
+      </form>
+    </td>
   </tr>
+  </tbody>
 </table>
+
+<p th:if="${inscricoes == null || inscricoes.isEmpty()}">Nenhum aluno inscrito nas suas trilhas ainda.</p>
+
 </body>
 </html>

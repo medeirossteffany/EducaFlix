@@ -1,35 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>EducaFlix - Meus Cursos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #2196F3;
+            color: white;
+        }
+        .status-em-andamento {
+            color: #FF9800;
+            font-weight: bold;
+        }
+        .status-finalizada {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<h1>EducaFlix - Aluno</h1>
+<h1>EducaFlix - Painel do Aluno</h1>
 <nav>
-    <a href="/aluno/dashboard">Painel</a> |
+    <a href="/aluno/dashboard">Explorar Trilhas</a> |
     <a href="/aluno/meus-cursos">Meus Cursos</a> |
     <a href="/aluno/perfil">Meu Perfil</a> |
-    <a href="/logout">Sair</a>
+    <a href="/login">Sair</a>
 </nav>
 <hr>
 
-<h2>Meus cursos</h2>
-<table border="1">
+<h2>Minhas inscrições</h2>
+<table>
+    <thead>
     <tr>
         <th>Trilha</th>
+        <th>Categoria</th>
+        <th>Nível</th>
+        <th>Carga Horária</th>
         <th>Status</th>
         <th>Ação</th>
     </tr>
+    </thead>
+    <tbody>
     <tr th:each="inscricao : ${inscricoes}">
-        <td th:text="${inscricao.trilha.titulo}">Trilha X</td>
-        <td th:text="${inscricao.status}">EM_ANDAMENTO</td>
+        <td><strong th:text="${inscricao.trilha.titulo}">Trilha X</strong></td>
+        <td th:text="${inscricao.trilha.categoria}">Categoria</td>
+        <td th:text="${inscricao.trilha.nivel}">Nível</td>
+        <td th:text="${inscricao.trilha.cargaHoraria} + 'h'">Carga</td>
         <td>
-            <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}">
-                <button type="submit" th:if="${inscricao.status == 'EM_ANDAMENTO'}">Finalizar</button>
+            <span th:class="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
+                  th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
+                Status
+            </span>
+        </td>
+        <td>
+            <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}"
+                  th:if="${inscricao.status == 'EM_ANDAMENTO'}">
+                <button type="submit">Finalizar Curso</button>
             </form>
+            <span th:if="${inscricao.status != 'EM_ANDAMENTO'}">Concluído ✓</span>
         </td>
     </tr>
+    </tbody>
 </table>
+
+<p th:if="${inscricoes == null || inscricoes.isEmpty()}">Você ainda não está inscrito em nenhuma trilha.</p>
+
 </body>
 </html>
