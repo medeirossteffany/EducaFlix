@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Trilha - EducaFlix</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+    <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
+    <div class="navbar-menu">
+        <a href="/profissional/dashboard">Trilhas</a>
+        <a href="/profissional/alunos-inscritos">Alunos Inscritos</a>
+        <a href="/profissional/perfil">Perfil</a>
+        <a href="/login">Sair</a>
+    </div>
+</nav>
+
+<div class="main-content">
+
+    <h2 class="section-title mb-20">✏️ Editar Trilha</h2>
+
+    <div class="section">
+        <div class="section-header">Atualizar Informações da Trilha</div>
+
+        <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/editar'}">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Título</label>
+                    <input type="text" name="titulo" class="form-input" required
+                           th:value="${trilha.titulo}" placeholder="Ex: Introdução ao Python">
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Descrição</label>
+                    <textarea name="descricao" class="form-textarea" required
+                              placeholder="Descreva o conteúdo da trilha..." th:text="${trilha.descricao}"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <input type="text" name="categoria" class="form-input" required
+                           th:value="${trilha.categoria}" placeholder="Ex: Programação">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Carga Horária (horas)</label>
+                    <input type="number" name="cargaHoraria" class="form-input" required
+                           th:value="${trilha.cargaHoraria}" placeholder="Ex: 40">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nível</label>
+                    <select name="nivel" class="form-select" required>
+                        <option value="INICIANTE" th:selected="${trilha.nivel == 'INICIANTE'}">Iniciante</option>
+                        <option value="INTERMEDIARIO" th:selected="${trilha.nivel == 'INTERMEDIARIO'}">Intermediário</option>
+                        <option value="AVANCADO" th:selected="${trilha.nivel == 'AVANCADO'}">Avançado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                <a href="/profissional/dashboard" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script src="/js/navbar-scroll.js"></script>
+
+</body>
+</html>

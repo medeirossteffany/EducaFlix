@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar" id="navbar">
     <a href="/aluno/dashboard" class="navbar-brand">EDUCAFLIX</a>
     <div class="navbar-menu">
@@ -19,50 +18,51 @@
     </div>
 </nav>
 
-<!-- Conteúdo Principal -->
 <div class="main-content">
 
-    <!-- Mensagens -->
     <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
     <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-    <!-- Filtros -->
     <div class="filters-section">
         <div class="section-header">🔍 Filtrar Trilhas</div>
-        <div class="filters-grid">
-            <div class="form-group">
-                <label class="form-label">Pesquisar</label>
-                <input type="text" id="searchInput" class="filter-input" placeholder="Digite o título ou descrição...">
+        <form method="get" action="/aluno/dashboard">
+            <div class="filters-grid">
+                <div class="form-group">
+                    <label class="form-label">Pesquisar</label>
+                    <input type="text" name="search" class="filter-input"
+                           th:value="${search}" placeholder="Digite o título ou descrição...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <select name="categoria" class="filter-select">
+                        <option value="">Todas</option>
+                        <option th:each="cat : ${trilhas.stream().map(t -> t.categoria).distinct().toList()}"
+                                th:value="${cat}" th:text="${cat}"
+                                th:selected="${categoria == cat}"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nível</label>
+                    <select name="nivel" class="filter-select">
+                        <option value="">Todos</option>
+                        <option value="INICIANTE" th:selected="${nivel == 'INICIANTE'}">Iniciante</option>
+                        <option value="INTERMEDIARIO" th:selected="${nivel == 'INTERMEDIARIO'}">Intermediário</option>
+                        <option value="AVANCADO" th:selected="${nivel == 'AVANCADO'}">Avançado</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-filter">Filtrar</button>
+                <a href="/aluno/dashboard" class="btn-clear">Limpar</a>
             </div>
-            <div class="form-group">
-                <label class="form-label">Categoria</label>
-                <select id="categoriaFilter" class="filter-select">
-                    <option value="">Todas</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Nível</label>
-                <select id="nivelFilter" class="filter-select">
-                    <option value="">Todos</option>
-                    <option value="INICIANTE">Iniciante</option>
-                    <option value="INTERMEDIARIO">Intermediário</option>
-                    <option value="AVANCADO">Avançado</option>
-                </select>
-            </div>
-            <button class="btn-clear" onclick="limparFiltros( )">Limpar</button>
-        </div>
+        </form>
     </div>
 
-    <!-- Info de resultados -->
     <div class="results-info">
         <h2 class="section-title">🎓 Trilhas Disponíveis</h2>
-        <span class="results-count" id="resultsCount"></span>
+        <span class="results-count" th:text="${trilhas.size()} + ' trilha' + (${trilhas.size()} != 1 ? 's' : '') + ' encontrada' + (${trilhas.size()} != 1 ? 's' : '')"></span>
     </div>
 
-    <!-- Grid de Trilhas -->
-    <div class="trilhas-grid" id="trilhasGrid">
-        <div class="trilha-card" th:each="trilha : ${trilhas}"
-             th:attr="data-titulo=${trilha.titulo}, data-descricao=${trilha.descricao}, data-categoria=${trilha.categoria}, data-nivel=${trilha.nivel}">
+    <div class="trilhas-grid" th:if="${!trilhas.isEmpty()}">
+        <div class="trilha-card" th:each="trilha : ${trilhas}">
             <div class="card-header">
                 <h3 class="card-title" th:text="${trilha.titulo}">Título da Trilha</h3>
             </div>
@@ -77,7 +77,6 @@
                     <span class="badge badge-carga" th:text="${trilha.cargaHoraria} + 'h'">Carga</span>
                 </div>
 
-                <!-- Botão de inscrição -->
                 <th:block th:if="${inscricaoService.jaInscrito(alunoId, trilha.id)}">
                     <button class="btn btn-disabled" style="width: 100%;" disabled>✓ Você já está inscrito</button>
                 </th:block>
@@ -90,8 +89,7 @@
         </div>
     </div>
 
-    <!-- Estado vazio -->
-    <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-state" th:if="${trilhas.isEmpty()}">
         <div class="empty-state-icon">🔍</div>
         <p class="empty-state-text">Nenhuma trilha encontrada com os filtros selecionados.</p>
         <p style="color: #666; font-size: 14px; margin-top: 10px;">Tente ajustar os filtros de pesquisa.</p>
@@ -100,7 +98,6 @@
 </div>
 
 <script src="/js/navbar-scroll.js"></script>
-<script src="/js/filtros-trilhas.js"></script>
 
 </body>
 </html>

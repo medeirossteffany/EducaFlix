@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar" id="navbar">
   <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
   <div class="navbar-menu">
@@ -19,47 +18,49 @@
   </div>
 </nav>
 
-<!-- Conteúdo Principal -->
 <div class="main-content">
 
-  <!-- Mensagens -->
   <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
   <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-  <!-- Filtros -->
   <div class="filters-section">
     <div class="section-header">🔍 Filtrar Alunos</div>
-    <div class="filters-grid">
-      <div class="form-group">
-        <label class="form-label">Pesquisar Aluno</label>
-        <input type="text" id="searchInput" class="filter-input" placeholder="Digite nome ou email do aluno...">
+    <form method="get" action="/profissional/alunos-inscritos">
+      <div class="filters-grid">
+        <div class="form-group">
+          <label class="form-label">Pesquisar Aluno</label>
+          <input type="text" name="search" class="filter-input"
+                 th:value="${search}" placeholder="Digite nome ou email do aluno...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Trilha</label>
+          <select name="trilha" class="filter-select">
+            <option value="">Todas</option>
+            <option th:each="t : ${inscricoes.stream().map(i -> i.trilha.titulo).distinct().toList()}"
+                    th:value="${t}" th:text="${t}"
+                    th:selected="${trilha == t}"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select name="status" class="filter-select">
+            <option value="">Todos</option>
+            <option value="EM_ANDAMENTO" th:selected="${status == 'EM_ANDAMENTO'}">Em Andamento</option>
+            <option value="FINALIZADA" th:selected="${status == 'FINALIZADA'}">Finalizada</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-filter">Filtrar</button>
+        <a href="/profissional/alunos-inscritos" class="btn-clear">Limpar</a>
       </div>
-      <div class="form-group">
-        <label class="form-label">Trilha</label>
-        <select id="trilhaFilter" class="filter-select">
-          <option value="">Todas</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Status</label>
-        <select id="statusFilter" class="filter-select">
-          <option value="">Todos</option>
-          <option value="EM_ANDAMENTO">Em Andamento</option>
-          <option value="FINALIZADA">Finalizada</option>
-        </select>
-      </div>
-      <button class="btn-clear" onclick="limparFiltros( )">Limpar</button>
-    </div>
+    </form>
   </div>
 
-  <!-- Info de resultados -->
   <div class="results-info">
     <h2 class="section-title">👥 Alunos Inscritos</h2>
-    <span class="results-count" id="resultsCount"></span>
+    <span class="results-count" th:text="${inscricoes.size()} + ' inscri' + (${inscricoes.size()} != 1 ? 'ções' : 'ção')"></span>
   </div>
 
-  <!-- Tabela -->
-  <div class="table-container" id="tableContainer">
+  <div class="table-container" th:if="${!inscricoes.isEmpty()}">
     <table>
       <thead>
       <tr>
@@ -70,9 +71,8 @@
         <th>Ações</th>
       </tr>
       </thead>
-      <tbody id="tableBody">
-      <tr th:each="inscricao : ${inscricoes}" class="inscricao-row"
-          th:attr="data-aluno=${inscricao.aluno.nome}, data-email=${inscricao.aluno.email}, data-trilha=${inscricao.trilha.titulo}, data-status=${inscricao.status}">
+      <tbody>
+      <tr th:each="inscricao : ${inscricoes}">
         <td th:text="${inscricao.aluno.nome}">Nome do Aluno</td>
         <td th:text="${inscricao.aluno.email}">email@exemplo.com</td>
         <td th:text="${inscricao.trilha.titulo}">Título da Trilha</td>
@@ -95,8 +95,7 @@
     </table>
   </div>
 
-  <!-- Estado vazio -->
-  <div class="empty-state" id="emptyState" style="display: none;">
+  <div class="empty-state" th:if="${inscricoes.isEmpty()}">
     <div class="empty-state-icon">🔍</div>
     <p class="empty-state-text">Nenhum aluno encontrado.</p>
     <p style="color: #666; font-size: 14px; margin-top: 10px;">Tente ajustar os filtros de pesquisa.</p>
@@ -105,7 +104,6 @@
 </div>
 
 <script src="/js/navbar-scroll.js"></script>
-<script src="/js/filtros-alunos.js"></script>
 
 </body>
 </html>
