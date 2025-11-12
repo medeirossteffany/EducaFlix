@@ -2,114 +2,99 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>EducaFlix - Meu Perfil (Profissional)</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    .form-container {
-      max-width: 600px;
-      margin: 20px 0;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .error-message {
-      background-color: #f44336;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .success-message {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .info-box {
-      background-color: #e8f5e9;
-      padding: 10px;
-      border-left: 4px solid #4CAF50;
-      margin-bottom: 20px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EducaFlix - Meu Perfil</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Painel do Profissional</h1>
-<nav>
-  <a href="/profissional/dashboard">Trilhas</a> |
-  <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
-  <a href="/profissional/perfil">Meu Perfil</a> |
-  <a href="/login">Sair</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
+  <div class="navbar-menu">
+    <a href="/profissional/dashboard">Trilhas</a>
+    <a href="/profissional/alunos-inscritos">Alunos Inscritos</a>
+    <a href="/profissional/perfil" class="active">Perfil</a>
+    <a href="/login">Sair</a>
+  </div>
 </nav>
-<hr>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<!-- Conteúdo Principal -->
+<div class="main-content">
 
-<!-- Mensagem de sucesso -->
-<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
+  <!-- Mensagens -->
+  <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
+  <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-<h2>Meu Perfil</h2>
+  <h2 class="section-title mb-20">👤 Meu Perfil</h2>
 
+  <!-- Formulário de Edição -->
+  <div class="section">
+    <div class="section-header">Editar Informações</div>
 
-<div class="form-container">
-  <form method="post" action="/profissional/perfil">
-    <div class="form-group">
-      <label>Nome Completo:</label>
-      <input type="text" name="nome" th:value="${profissional.nome}" required>
+    <form method="post" action="/profissional/perfil">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label class="form-label">Nome Completo</label>
+          <input type="text" name="nome" class="form-input" required
+                 th:value="${usuario.nome}" placeholder="Seu nome completo">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-input" required
+                 th:value="${usuario.email}" placeholder="seu@email.com">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">CPF</label>
+          <input type="text" name="cpf" class="form-input" required
+                 th:value="${usuario.cpf}" placeholder="000.000.000-00">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Área de Atuação</label>
+          <input type="text" name="areaAtuacao" class="form-input"
+                 th:value="${usuario.areaAtuacao}" placeholder="Ex: Desenvolvedor, Professor...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Código do Professor</label>
+          <input type="text" name="codigoProfessor" class="form-input"
+                 th:value="${usuario.codigoProfessor}" placeholder="Código único">
+        </div>
+
+        <div class="form-group full-width">
+          <label class="form-label">Nova Senha (deixe em branco para manter a atual )</label>
+          <input type="password" name="senha" class="form-input"
+                 placeholder="Digite uma nova senha ou deixe em branco">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+    </form>
+  </div>
+
+  <!-- Informações da Conta -->
+  <div class="section">
+    <div class="section-header">📊 Estatísticas</div>
+
+    <div class="info-box green">
+      <strong>Tipo de Conta:</strong> Profissional
     </div>
 
-    <div class="form-group">
-      <label>Email:</label>
-      <input type="email" name="email" th:value="${profissional.email}" required>
+    <div class="info-box">
+      <strong>Total de Trilhas Criadas:</strong> <span th:text="${totalTrilhas}">0</span> trilha(s)
     </div>
 
-    <div class="form-group">
-      <label>Senha (deixe em branco para manter a atual):</label>
-      <input type="password" name="senha" placeholder="Digite uma nova senha ou deixe em branco">
+    <div class="info-box">
+      <strong>Total de Alunos Inscritos:</strong> <span th:text="${totalAlunos}">0</span> aluno(s)
     </div>
+  </div>
 
-    <div class="form-group">
-      <label>Área de Atuação:</label>
-      <input type="text" name="areaAtuacao" th:value="${profissional.areaAtuacao}" placeholder="Ex: Desenvolvimento Web, Design, etc.">
-    </div>
-
-    <div class="form-group">
-      <label>Código do Professor:</label>
-      <input type="text" name="codigoProfessor" th:value="${profissional.codigoProfessor}">
-    </div>
-
-    <button type="submit">Salvar Alterações</button>
-  </form>
 </div>
+
+<script src="/js/navbar-scroll.js"></script>
 
 </body>
 </html>

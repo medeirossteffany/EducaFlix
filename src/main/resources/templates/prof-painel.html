@@ -2,171 +2,175 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EducaFlix - Painel do Profissional</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .form-inline {
-            display: inline-block;
-            margin: 0 5px;
-        }
-        .edit-form {
-            display: none;
-            background-color: #f9f9f9;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-        }
-        .edit-form.active {
-            display: block;
-        }
-        .error-message {
-            background-color: #f44336;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .success-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-    </style>
-    <script>
-        function toggleEdit(id) {
-            var form = document.getElementById('edit-form-' + id);
-            if (form.classList.contains('active')) {
-                form.classList.remove('active');
-            } else {
-                // Esconde todos os outros formulários
-                var allForms = document.querySelectorAll('.edit-form');
-                allForms.forEach(function(f) {
-                    f.classList.remove('active');
-                });
-                form.classList.add('active');
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Painel do Profissional</h1>
-<nav>
-    <a href="/profissional/dashboard">Trilhas</a> |
-    <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
-    <a href="/profissional/perfil">Meu Perfil</a> |
-    <a href="/login">Sair</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
+    <div class="navbar-menu">
+        <a href="/profissional/dashboard" class="active">Trilhas</a>
+        <a href="/profissional/alunos-inscritos">Alunos Inscritos</a>
+        <a href="/profissional/perfil">Perfil</a>
+        <a href="/login">Sair</a>
+    </div>
 </nav>
-<hr>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<!-- Conteúdo Principal -->
+<div class="main-content">
 
-<!-- Mensagem de sucesso -->
-<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
+    <!-- Mensagens -->
+    <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
+    <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-<h2>Criar nova trilha</h2>
-<form method="post" action="/profissional/trilhas">
-    <label>Título:</label><br>
-    <input type="text" name="titulo" required style="width: 400px;"><br><br>
-
-    <label>Descrição:</label><br>
-    <textarea name="descricao" required style="width: 400px; height: 80px;"></textarea><br><br>
-
-    <label>Categoria:</label><br>
-    <input type="text" name="categoria" required style="width: 400px;"><br><br>
-
-    <label>Carga Horária (horas):</label><br>
-    <input type="number" name="cargaHoraria" required style="width: 400px;"><br><br>
-
-    <label>Nível:</label><br>
-    <select name="nivel" required style="width: 400px;">
-        <option value="INICIANTE">Iniciante</option>
-        <option value="INTERMEDIARIO">Intermediário</option>
-        <option value="AVANCADO">Avançado</option>
-    </select><br><br>
-
-    <button type="submit">Criar trilha</button>
-</form>
-
-<h2>Minhas trilhas</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Título</th>
-        <th>Categoria</th>
-        <th>Nível</th>
-        <th>Carga Horária</th>
-        <th>Ações</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="trilha : ${trilhas}">
-        <td>
-            <strong th:text="${trilha.titulo}">Título</strong>
-            <br>
-            <small th:text="${trilha.descricao}">Descrição</small>
-
-            <!-- Formulário de edição (oculto por padrão) -->
-            <div th:id="'edit-form-' + ${trilha.id}" class="edit-form">
-                <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/editar'}">
-                    <label>Título:</label><br>
-                    <input type="text" name="titulo" th:value="${trilha.titulo}" required style="width: 100%;"><br><br>
-
-                    <label>Descrição:</label><br>
-                    <textarea name="descricao" required style="width: 100%; height: 60px;" th:text="${trilha.descricao}"></textarea><br><br>
-
-                    <label>Categoria:</label><br>
-                    <input type="text" name="categoria" th:value="${trilha.categoria}" required style="width: 100%;"><br><br>
-
-                    <label>Carga Horária:</label><br>
-                    <input type="number" name="cargaHoraria" th:value="${trilha.cargaHoraria}" required style="width: 100%;"><br><br>
-
-                    <label>Nível:</label><br>
-                    <select name="nivel" required style="width: 100%;">
-                        <option value="INICIANTE" th:selected="${trilha.nivel == 'INICIANTE'}">Iniciante</option>
-                        <option value="INTERMEDIARIO" th:selected="${trilha.nivel == 'INTERMEDIARIO'}">Intermediário</option>
-                        <option value="AVANCADO" th:selected="${trilha.nivel == 'AVANCADO'}">Avançado</option>
-                    </select><br><br>
-
-                    <button type="submit">Salvar alterações</button>
-                    <button type="button" th:onclick="'toggleEdit(' + ${trilha.id} + ')'">Cancelar</button>
-                </form>
+    <!-- Criar Nova Trilha -->
+    <div class="section">
+        <div class="section-header">➕ Criar Nova Trilha</div>
+        <form method="post" action="/profissional/trilhas">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Título</label>
+                    <input type="text" name="titulo" class="form-input" required placeholder="Ex: Introdução ao Python">
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Descrição</label>
+                    <textarea name="descricao" class="form-textarea" required placeholder="Descreva o conteúdo da trilha..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <input type="text" name="categoria" class="form-input" required placeholder="Ex: Programação">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Carga Horária (horas )</label>
+                    <input type="number" name="cargaHoraria" class="form-input" required placeholder="Ex: 40">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nível</label>
+                    <select name="nivel" class="form-select" required>
+                        <option value="">Selecione...</option>
+                        <option value="INICIANTE">Iniciante</option>
+                        <option value="INTERMEDIARIO">Intermediário</option>
+                        <option value="AVANCADO">Avançado</option>
+                    </select>
+                </div>
             </div>
-        </td>
-        <td th:text="${trilha.categoria}">Categoria</td>
-        <td th:text="${trilha.nivel}">Nível</td>
-        <td th:text="${trilha.cargaHoraria} + 'h'">Carga</td>
-        <td>
-            <button type="button" th:onclick="'toggleEdit(' + ${trilha.id} + ')'" class="form-inline">Editar</button>
+            <button type="submit" class="btn-create">Criar Trilha</button>
+        </form>
+    </div>
 
-            <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/excluir'}" class="form-inline" onsubmit="return confirm('Tem certeza que deseja excluir esta trilha?');">
-                <button type="submit">Excluir</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="section-header">🔍 Filtrar Minhas Trilhas</div>
+        <div class="filters-grid">
+            <div class="form-group">
+                <label class="form-label">Pesquisar</label>
+                <input type="text" id="searchInput" class="filter-input" placeholder="Digite o título ou descrição...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select id="categoriaFilter" class="filter-select">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nível</label>
+                <select id="nivelFilter" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="INICIANTE">Iniciante</option>
+                    <option value="INTERMEDIARIO">Intermediário</option>
+                    <option value="AVANCADO">Avançado</option>
+                </select>
+            </div>
+            <button class="btn-clear" onclick="limparFiltros()">Limpar</button>
+        </div>
+    </div>
 
-<p th:if="${trilhas == null || trilhas.isEmpty()}">Você ainda não criou nenhuma trilha.</p>
+    <!-- Info de resultados -->
+    <div class="results-info">
+        <h2 class="section-title">📚 Minhas Trilhas</h2>
+        <span class="results-count" id="resultsCount"></span>
+    </div>
+
+    <!-- Grid de Trilhas -->
+    <div class="trilhas-grid" id="trilhasGrid">
+        <div class="trilha-card" th:each="trilha : ${trilhas}"
+             th:attr="data-id=${trilha.id}, data-titulo=${trilha.titulo}, data-descricao=${trilha.descricao}, data-categoria=${trilha.categoria}, data-nivel=${trilha.nivel}, data-carga=${trilha.cargaHoraria}">
+            <div class="card-header green">
+                <h3 class="card-title" th:text="${trilha.titulo}">Título</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-description" th:text="${trilha.descricao}">Descrição</p>
+
+                <div class="card-meta">
+                    <span class="badge badge-categoria" th:text="${trilha.categoria}">Categoria</span>
+                    <span class="badge badge-nivel" th:text="${trilha.nivel}">Nível</span>
+                    <span class="badge badge-carga" th:text="${trilha.cargaHoraria} + 'h'">Carga</span>
+                </div>
+
+                <div class="card-actions">
+                    <button class="btn-edit" th:onclick="'abrirModalEdicao(' + ${trilha.id} + ')'">✏️ Editar</button>
+                    <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/excluir'}"
+                          style="flex: 1;" onsubmit="return confirm('Tem certeza que deseja excluir esta trilha?');">
+                        <button type="submit" class="btn-delete" style="width: 100%;">🗑️ Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🔍</div>
+        <p class="empty-state-text">Nenhuma trilha encontrada.</p>
+    </div>
+
+</div>
+
+<!-- Modal de Edição -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <div class="modal-header">✏️ Editar Trilha</div>
+        <form method="post" id="editForm">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label class="form-label">Título</label>
+                    <input type="text" name="titulo" id="editTitulo" class="form-input" required>
+                </div>
+                <div class="form-group full-width">
+                    <label class="form-label">Descrição</label>
+                    <textarea name="descricao" id="editDescricao" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Categoria</label>
+                    <input type="text" name="categoria" id="editCategoria" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Carga Horária</label>
+                    <input type="number" name="cargaHoraria" id="editCarga" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nível</label>
+                    <select name="nivel" id="editNivel" class="form-select" required>
+                        <option value="INICIANTE">Iniciante</option>
+                        <option value="INTERMEDIARIO">Intermediário</option>
+                        <option value="AVANCADO">Avançado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Salvar Alterações</button>
+                <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/navbar-scroll.js"></script>
+<script src="/js/filtros-trilhas.js"></script>
+<script src="/js/modal-edicao.js"></script>
 
 </body>
 </html>

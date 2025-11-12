@@ -2,148 +2,112 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - EducaFlix</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      max-width: 500px;
-      margin: 50px auto;
-    }
-    h1 {
-      color: #333;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      box-sizing: border-box;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .error-message {
-      background-color: #f44336;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .success-message {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .campos-aluno, .campos-profissional {
-      display: none;
-    }
-  </style>
-  <script>
-    function mostrarCampos() {
-      var role = document.getElementById('role').value;
-      var camposAluno = document.getElementById('campos-aluno');
-      var camposProfissional = document.getElementById('campos-profissional');
-
-      if (role === 'ALUNO') {
-        camposAluno.style.display = 'block';
-        camposProfissional.style.display = 'none';
-      } else if (role === 'PROFISSIONAL') {
-        camposAluno.style.display = 'none';
-        camposProfissional.style.display = 'block';
-      } else {
-        camposAluno.style.display = 'none';
-        camposProfissional.style.display = 'none';
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Cadastro</h1>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<div class="auth-container">
+  <div class="auth-box">
+    <h1>🎓 EducaFlix</h1>
+    <h2>Crie sua conta</h2>
 
-<form method="post" action="/cadastro">
-  <div class="form-group">
-    <label>Nome Completo:</label>
-    <input type="text" name="nome" th:value="${usuario?.nome}" required>
-  </div>
+    <!-- Mensagem de erro -->
+    <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
 
-  <div class="form-group">
-    <label>Email:</label>
-    <input type="email" name="email" th:value="${usuario?.email}" required>
-  </div>
+    <form method="post" action="/cadastro">
+      <div class="form-group">
+        <label class="form-label">Nome Completo:</label>
+        <input type="text" name="nome" class="form-input" required
+               th:value="${nome}" placeholder="Seu nome completo">
+      </div>
 
-  <div class="form-group">
-    <label>Senha:</label>
-    <input type="password" name="senha" required minlength="6">
-  </div>
+      <div class="form-group">
+        <label class="form-label">Email:</label>
+        <input type="email" name="email" class="form-input" required
+               th:value="${email}" placeholder="seu@email.com">
+      </div>
 
-  <div class="form-group">
-    <label>Tipo de Cadastro:</label>
-    <select name="role" id="role" onchange="mostrarCampos()" required>
-      <option value="">Selecione...</option>
-      <option value="ALUNO" th:selected="${usuario?.role == 'ALUNO'}">Aluno</option>
-      <option value="PROFISSIONAL" th:selected="${usuario?.role == 'PROFISSIONAL'}">Profissional</option>
-    </select>
-  </div>
+      <div class="form-group">
+        <label class="form-label">CPF:</label>
+        <input type="text" name="cpf" class="form-input" required
+               th:value="${cpf}" placeholder="000.000.000-00">
+      </div>
 
-  <!-- Campos específicos de ALUNO -->
-  <div id="campos-aluno" class="campos-aluno">
-    <div class="form-group">
-      <label>CPF:</label>
-      <input type="text" name="cpf" th:value="${usuario?.cpf}">
+      <div class="form-group">
+        <label class="form-label">Senha:</label>
+        <input type="password" name="senha" class="form-input" required
+               placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tipo de Conta:</label>
+        <select name="role" class="form-select" required>
+          <option value="">Selecione...</option>
+          <option value="ALUNO" th:selected="${role == 'ALUNO'}">Aluno</option>
+          <option value="PROFISSIONAL" th:selected="${role == 'PROFISSIONAL'}">Profissional</option>
+        </select>
+      </div>
+
+      <!-- Campos específicos para ALUNO -->
+      <div class="form-group" id="campoAreaInteresse" style="display: none;">
+        <label class="form-label">Área de Interesse:</label>
+        <input type="text" name="areaInteresse" class="form-input"
+               th:value="${areaInteresse}" placeholder="Ex: Programação, Design...">
+      </div>
+
+      <!-- Campos específicos para PROFISSIONAL -->
+      <div class="form-group" id="campoAreaAtuacao" style="display: none;">
+        <label class="form-label">Área de Atuação:</label>
+        <input type="text" name="areaAtuacao" class="form-input"
+               th:value="${areaAtuacao}" placeholder="Ex: Desenvolvedor, Professor...">
+      </div>
+
+      <div class="form-group" id="campoCodigoProfessor" style="display: none;">
+        <label class="form-label">Código do Professor:</label>
+        <input type="text" name="codigoProfessor" class="form-input"
+               th:value="${codigoProfessor}" placeholder="Código único">
+      </div>
+
+      <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">
+        Cadastrar
+      </button>
+    </form>
+
+    <div class="auth-link">
+      <p>Já tem uma conta? <a href="/login">Faça login aqui</a></p>
     </div>
-
-    <div class="form-group">
-      <label>Área de Interesse:</label>
-      <input type="text" name="areaInteresse" th:value="${usuario?.areaInteresse}" placeholder="Ex: Tecnologia, Marketing, etc.">
-    </div>
   </div>
-
-  <!-- Campos específicos de PROFISSIONAL -->
-  <div id="campos-profissional" class="campos-profissional">
-    <div class="form-group">
-      <label>Área de Atuação:</label>
-      <input type="text" name="areaAtuacao" th:value="${usuario?.areaAtuacao}" placeholder="Ex: Desenvolvimento Web, Design, etc.">
-    </div>
-
-    <div class="form-group">
-      <label>Código de Professor:</label>
-      <input type="text" name="codigoProfessor" th:value="${usuario?.codigoProfessor}">
-    </div>
-  </div>
-
-  <button type="submit">Cadastrar</button>
-</form>
-
-<p>Já tem conta? <a href="/login">Faça login</a></p>
+</div>
 
 <script>
-  // Mostra os campos corretos ao carregar a página (caso haja erro e volte com dados)
-  window.onload = function() {
-    mostrarCampos();
-  };
+  // Mostrar/ocultar campos conforme o tipo de conta
+  const roleSelect = document.querySelector('select[name="role"]' );
+  const campoAreaInteresse = document.getElementById('campoAreaInteresse');
+  const campoAreaAtuacao = document.getElementById('campoAreaAtuacao');
+  const campoCodigoProfessor = document.getElementById('campoCodigoProfessor');
+
+  roleSelect.addEventListener('change', function() {
+    if (this.value === 'ALUNO') {
+      campoAreaInteresse.style.display = 'block';
+      campoAreaAtuacao.style.display = 'none';
+      campoCodigoProfessor.style.display = 'none';
+    } else if (this.value === 'PROFISSIONAL') {
+      campoAreaInteresse.style.display = 'none';
+      campoAreaAtuacao.style.display = 'block';
+      campoCodigoProfessor.style.display = 'block';
+    } else {
+      campoAreaInteresse.style.display = 'none';
+      campoAreaAtuacao.style.display = 'none';
+      campoCodigoProfessor.style.display = 'none';
+    }
+  });
+
+  // Verificar ao carregar a página
+  if (roleSelect.value) {
+    roleSelect.dispatchEvent(new Event('change'));
+  }
 </script>
 
 </body>

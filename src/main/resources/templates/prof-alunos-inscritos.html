@@ -2,100 +2,110 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EducaFlix - Alunos Inscritos</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: left;
-    }
-    th {
-      background-color: #4CAF50;
-      color: white;
-    }
-    .status-em-andamento {
-      color: #FF9800;
-      font-weight: bold;
-    }
-    .status-finalizada {
-      color: #4CAF50;
-      font-weight: bold;
-    }
-    .error-message {
-      background-color: #f44336;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-    .success-message {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Painel do Profissional</h1>
-<nav>
-  <a href="/profissional/dashboard">Trilhas</a> |
-  <a href="/profissional/alunos-inscritos">Alunos Inscritos</a> |
-  <a href="/profissional/perfil">Meu Perfil</a> |
-  <a href="/login">Sair</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
+  <div class="navbar-menu">
+    <a href="/profissional/dashboard">Trilhas</a>
+    <a href="/profissional/alunos-inscritos" class="active">Alunos Inscritos</a>
+    <a href="/profissional/perfil">Perfil</a>
+    <a href="/login">Sair</a>
+  </div>
 </nav>
-<hr>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<!-- Conteúdo Principal -->
+<div class="main-content">
 
-<!-- Mensagem de sucesso -->
-<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
+  <!-- Mensagens -->
+  <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
+  <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-<h2>Alunos inscritos nas minhas trilhas</h2>
-<table>
-  <thead>
-  <tr>
-    <th>Aluno</th>
-    <th>Email</th>
-    <th>Trilha</th>
-    <th>Status</th>
-    <th>Ações</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="inscricao : ${inscricoes}">
-    <td th:text="${inscricao.aluno.nome}">Nome do Aluno</td>
-    <td th:text="${inscricao.aluno.email}">email@exemplo.com</td>
-    <td th:text="${inscricao.trilha.titulo}">Título da Trilha</td>
-    <td>
-      <span th:class="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
-            th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
-        Status
-      </span>
-    </td>
-    <td>
-      <form method="post" th:action="@{'/profissional/inscricoes/' + ${inscricao.id} + '/remover'}"
-            style="display: inline-block;"
-            onsubmit="return confirm('Tem certeza que deseja remover a inscrição deste aluno?');">
-        <button type="submit">Remover Inscrição</button>
-      </form>
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="section-header">🔍 Filtrar Alunos</div>
+    <div class="filters-grid">
+      <div class="form-group">
+        <label class="form-label">Pesquisar Aluno</label>
+        <input type="text" id="searchInput" class="filter-input" placeholder="Digite nome ou email do aluno...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Trilha</label>
+        <select id="trilhaFilter" class="filter-select">
+          <option value="">Todas</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="statusFilter" class="filter-select">
+          <option value="">Todos</option>
+          <option value="EM_ANDAMENTO">Em Andamento</option>
+          <option value="FINALIZADA">Finalizada</option>
+        </select>
+      </div>
+      <button class="btn-clear" onclick="limparFiltros( )">Limpar</button>
+    </div>
+  </div>
 
-<p th:if="${inscricoes == null || inscricoes.isEmpty()}">Nenhum aluno inscrito nas suas trilhas ainda.</p>
+  <!-- Info de resultados -->
+  <div class="results-info">
+    <h2 class="section-title">👥 Alunos Inscritos</h2>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-container" id="tableContainer">
+    <table>
+      <thead>
+      <tr>
+        <th>Aluno</th>
+        <th>Email</th>
+        <th>Trilha</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+      </thead>
+      <tbody id="tableBody">
+      <tr th:each="inscricao : ${inscricoes}" class="inscricao-row"
+          th:attr="data-aluno=${inscricao.aluno.nome}, data-email=${inscricao.aluno.email}, data-trilha=${inscricao.trilha.titulo}, data-status=${inscricao.status}">
+        <td th:text="${inscricao.aluno.nome}">Nome do Aluno</td>
+        <td th:text="${inscricao.aluno.email}">email@exemplo.com</td>
+        <td th:text="${inscricao.trilha.titulo}">Título da Trilha</td>
+        <td>
+                        <span class="status-badge"
+                              th:classappend="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
+                              th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
+                            Status
+                        </span>
+        </td>
+        <td>
+          <form method="post" th:action="@{'/profissional/inscricoes/' + ${inscricao.id} + '/remover'}"
+                style="display: inline-block;"
+                onsubmit="return confirm('Tem certeza que deseja remover a inscrição deste aluno?');">
+            <button type="submit" class="btn-remove">🗑️ Remover</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Estado vazio -->
+  <div class="empty-state" id="emptyState" style="display: none;">
+    <div class="empty-state-icon">🔍</div>
+    <p class="empty-state-text">Nenhum aluno encontrado.</p>
+    <p style="color: #666; font-size: 14px; margin-top: 10px;">Tente ajustar os filtros de pesquisa.</p>
+  </div>
+
+</div>
+
+<script src="/js/navbar-scroll.js"></script>
+<script src="/js/filtros-alunos.js"></script>
 
 </body>
 </html>

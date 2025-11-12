@@ -1,23 +1,47 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - EducaFlix</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix</h1>
-<h2>Login</h2>
 
-<form method="post" action="/login">
-  <label>Email:</label><br>
-  <input type="email" name="email" required><br><br>
+<div class="auth-container">
+  <div class="auth-box">
+    <h1>🎓 EducaFlix</h1>
+    <h2>Faça seu login</h2>
 
-  <label>Senha:</label><br>
-  <input type="password" name="senha" required><br><br>
+    <!-- Mensagem de erro -->
+    <div class="alert alert-error" th:if="${param.error}">
+      Email ou senha incorretos. Tente novamente.
+    </div>
 
-  <button type="submit">Entrar</button>
-</form>
+    <!-- Mensagem de sucesso após cadastro -->
+    <div class="alert alert-success" th:if="${param.cadastro}">
+      Cadastro realizado com sucesso! Faça login para continuar.
+    </div>
 
-<p>Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+    <form method="post" action="/login">
+      <div class="form-group">
+        <label class="form-label">Email:</label>
+        <input type="email" name="email" class="form-input" required placeholder="seu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Senha:</label>
+        <input type="password" name="senha" class="form-input" required placeholder="Digite sua senha">
+      </div>
+
+      <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 10px;">Entrar</button>
+    </form>
+
+    <div class="auth-link">
+      <p>Ainda não tem conta? <a href="/cadastro">Cadastre-se aqui</a></p>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

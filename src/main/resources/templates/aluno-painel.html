@@ -2,115 +2,105 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>EducaFlix - Painel do Aluno</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #2196F3;
-            color: white;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        .error-message {
-            background-color: #f44336;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .success-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .btn-inscrito {
-            background-color: #9E9E9E;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: not-allowed;
-        }
-        .btn-inscrever {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-inscrever:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EducaFlix - Explorar Trilhas</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Painel do Aluno</h1>
-<nav>
-    <a href="/aluno/dashboard">Explorar Trilhas</a> |
-    <a href="/aluno/meus-cursos">Meus Cursos</a> |
-    <a href="/aluno/perfil">Meu Perfil</a> |
-    <a href="/login">Sair</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <a href="/aluno/dashboard" class="navbar-brand">EDUCAFLIX</a>
+    <div class="navbar-menu">
+        <a href="/aluno/dashboard" class="active">Explorar</a>
+        <a href="/aluno/meus-cursos">Meus Cursos</a>
+        <a href="/aluno/perfil">Perfil</a>
+        <a href="/login">Sair</a>
+    </div>
 </nav>
-<hr>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<!-- Conteúdo Principal -->
+<div class="main-content">
 
-<!-- Mensagem de sucesso -->
-<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
+    <!-- Mensagens -->
+    <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
+    <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-<h2>Trilhas disponíveis para inscrição</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Título</th>
-        <th>Descrição</th>
-        <th>Categoria</th>
-        <th>Nível</th>
-        <th>Carga Horária</th>
-        <th>Ação</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="trilha : ${trilhas}">
-        <td><strong th:text="${trilha.titulo}">Título</strong></td>
-        <td th:text="${trilha.descricao}">Descrição</td>
-        <td th:text="${trilha.categoria}">Categoria</td>
-        <td th:text="${trilha.nivel}">Nível</td>
-        <td th:text="${trilha.cargaHoraria} + 'h'">Carga</td>
-        <td>
-            <!-- NOVO: Verifica se já está inscrito -->
-            <th:block th:if="${inscricaoService.jaInscrito(alunoId, trilha.id)}">
-                <button class="btn-inscrito" disabled>Você já está inscrito</button>
-            </th:block>
-            <th:block th:unless="${inscricaoService.jaInscrito(alunoId, trilha.id)}">
-                <form method="post" th:action="@{'/aluno/trilhas/' + ${trilha.id} + '/inscrever'}" style="display: inline;">
-                    <button type="submit" class="btn-inscrever">Inscrever-se</button>
-                </form>
-            </th:block>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- Filtros -->
+    <div class="filters-section">
+        <div class="section-header">🔍 Filtrar Trilhas</div>
+        <div class="filters-grid">
+            <div class="form-group">
+                <label class="form-label">Pesquisar</label>
+                <input type="text" id="searchInput" class="filter-input" placeholder="Digite o título ou descrição...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Categoria</label>
+                <select id="categoriaFilter" class="filter-select">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nível</label>
+                <select id="nivelFilter" class="filter-select">
+                    <option value="">Todos</option>
+                    <option value="INICIANTE">Iniciante</option>
+                    <option value="INTERMEDIARIO">Intermediário</option>
+                    <option value="AVANCADO">Avançado</option>
+                </select>
+            </div>
+            <button class="btn-clear" onclick="limparFiltros( )">Limpar</button>
+        </div>
+    </div>
 
-<p th:if="${trilhas == null || trilhas.isEmpty()}">Nenhuma trilha disponível no momento.</p>
+    <!-- Info de resultados -->
+    <div class="results-info">
+        <h2 class="section-title">🎓 Trilhas Disponíveis</h2>
+        <span class="results-count" id="resultsCount"></span>
+    </div>
+
+    <!-- Grid de Trilhas -->
+    <div class="trilhas-grid" id="trilhasGrid">
+        <div class="trilha-card" th:each="trilha : ${trilhas}"
+             th:attr="data-titulo=${trilha.titulo}, data-descricao=${trilha.descricao}, data-categoria=${trilha.categoria}, data-nivel=${trilha.nivel}">
+            <div class="card-header">
+                <h3 class="card-title" th:text="${trilha.titulo}">Título da Trilha</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-description" th:text="${trilha.descricao}">
+                    Descrição da trilha de aprendizado...
+                </p>
+
+                <div class="card-meta">
+                    <span class="badge badge-categoria" th:text="${trilha.categoria}">Categoria</span>
+                    <span class="badge badge-nivel" th:text="${trilha.nivel}">Nível</span>
+                    <span class="badge badge-carga" th:text="${trilha.cargaHoraria} + 'h'">Carga</span>
+                </div>
+
+                <!-- Botão de inscrição -->
+                <th:block th:if="${inscricaoService.jaInscrito(alunoId, trilha.id)}">
+                    <button class="btn btn-disabled" style="width: 100%;" disabled>✓ Você já está inscrito</button>
+                </th:block>
+                <th:block th:unless="${inscricaoService.jaInscrito(alunoId, trilha.id)}">
+                    <form method="post" th:action="@{'/aluno/trilhas/' + ${trilha.id} + '/inscrever'}">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">▶ Inscrever-se Agora</button>
+                    </form>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🔍</div>
+        <p class="empty-state-text">Nenhuma trilha encontrada com os filtros selecionados.</p>
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">Tente ajustar os filtros de pesquisa.</p>
+    </div>
+
+</div>
+
+<script src="/js/navbar-scroll.js"></script>
+<script src="/js/filtros-trilhas.js"></script>
 
 </body>
 </html>

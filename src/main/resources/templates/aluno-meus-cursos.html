@@ -2,102 +2,83 @@
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EducaFlix - Meus Cursos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #2196F3;
-            color: white;
-        }
-        .status-em-andamento {
-            color: #FF9800;
-            font-weight: bold;
-        }
-        .status-finalizada {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        .error-message {
-            background-color: #f44336;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-        .success-message {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<h1>EducaFlix - Painel do Aluno</h1>
-<nav>
-    <a href="/aluno/dashboard">Explorar Trilhas</a> |
-    <a href="/aluno/meus-cursos">Meus Cursos</a> |
-    <a href="/aluno/perfil">Meu Perfil</a> |
-    <a href="/login">Sair</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+    <a href="/aluno/dashboard" class="navbar-brand">EDUCAFLIX</a>
+    <div class="navbar-menu">
+        <a href="/aluno/dashboard">Explorar</a>
+        <a href="/aluno/meus-cursos" class="active">Meus Cursos</a>
+        <a href="/aluno/perfil">Perfil</a>
+        <a href="/login">Sair</a>
+    </div>
 </nav>
-<hr>
 
-<!-- Mensagem de erro -->
-<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+<!-- Conteúdo Principal -->
+<div class="main-content">
 
-<!-- Mensagem de sucesso -->
-<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
+    <!-- Mensagens -->
+    <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
+    <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
-<h2>Minhas inscrições</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Trilha</th>
-        <th>Categoria</th>
-        <th>Nível</th>
-        <th>Carga Horária</th>
-        <th>Status</th>
-        <th>Ação</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="inscricao : ${inscricoes}">
-        <td><strong th:text="${inscricao.trilha.titulo}">Trilha X</strong></td>
-        <td th:text="${inscricao.trilha.categoria}">Categoria</td>
-        <td th:text="${inscricao.trilha.nivel}">Nível</td>
-        <td th:text="${inscricao.trilha.cargaHoraria} + 'h'">Carga</td>
-        <td>
-            <span th:class="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
-                  th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
-                Status
-            </span>
-        </td>
-        <td>
-            <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}"
-                  th:if="${inscricao.status == 'EM_ANDAMENTO'}">
-                <button type="submit">Finalizar Curso</button>
-            </form>
-            <span th:if="${inscricao.status != 'EM_ANDAMENTO'}">Concluído ✓</span>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <h2 class="section-title mb-20">📚 Meus Cursos</h2>
 
-<p th:if="${inscricoes == null || inscricoes.isEmpty()}">Você ainda não está inscrito em nenhuma trilha.</p>
+    <!-- Grid de Cursos -->
+    <div class="cards-grid">
+        <div class="card" th:each="inscricao : ${inscricoes}">
+            <div class="card-header blue">
+                <h3 class="card-title" th:text="${inscricao.trilha.titulo}">Título do Curso</h3>
+            </div>
+            <div class="card-body">
+                <p class="card-description" th:text="${inscricao.trilha.descricao}">
+                    Descrição do curso...
+                </p>
+
+                <div class="card-meta">
+                    <span class="badge badge-categoria" th:text="${inscricao.trilha.categoria}">Categoria</span>
+                    <span class="badge badge-nivel" th:text="${inscricao.trilha.nivel}">Nível</span>
+                    <span class="badge badge-carga" th:text="${inscricao.trilha.cargaHoraria} + 'h'">Carga</span>
+                    <span class="status-badge"
+                          th:classappend="${inscricao.status == 'EM_ANDAMENTO' ? 'status-em-andamento' : 'status-finalizada'}"
+                          th:text="${inscricao.status == 'EM_ANDAMENTO' ? 'Em Andamento' : 'Finalizada'}">
+                        Status
+                    </span>
+                </div>
+
+                <!-- Botão de finalizar -->
+                <th:block th:if="${inscricao.status == 'EM_ANDAMENTO'}">
+                    <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}">
+                        <button type="submit" class="btn btn-success" style="width: 100%;">
+                            ✓ Marcar como Finalizada
+                        </button>
+                    </form>
+                </th:block>
+                <th:block th:if="${inscricao.status == 'FINALIZADA'}">
+                    <button class="btn btn-disabled" style="width: 100%;" disabled>
+                        ✓ Curso Finalizado
+                    </button>
+                </th:block>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estado vazio -->
+    <div class="empty-state" th:if="${inscricoes == null || inscricoes.isEmpty( )}">
+        <div class="empty-state-icon">📚</div>
+        <p class="empty-state-text">Você ainda não está inscrito em nenhum curso.</p>
+        <p style="color: #666; font-size: 14px; margin-top: 10px;">
+            <a href="/aluno/dashboard" style="color: #e50914; text-decoration: none;">Explore as trilhas disponíveis</a>
+        </p>
+    </div>
+
+</div>
+
+<script src="/js/navbar-scroll.js"></script>
 
 </body>
 </html>
