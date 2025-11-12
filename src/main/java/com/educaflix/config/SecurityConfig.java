@@ -16,7 +16,7 @@ public class SecurityConfig {
                 // Desativa autenticações padrões do Spring
                 .csrf(csrf -> csrf.disable())
                 .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable()) // CORRIGIDO: desabilitar httpBasic
+                .httpBasic(basic -> basic.disable( ))  // ✅ CORRETO
                 .logout(logout -> logout.disable())
 
                 // Define as permissões

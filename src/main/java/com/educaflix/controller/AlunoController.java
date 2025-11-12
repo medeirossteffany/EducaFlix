@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/aluno")
@@ -36,16 +37,25 @@ public class AlunoController {
     // Página 1 - Painel (lista trilhas disponíveis)
     @GetMapping("/dashboard")
     public String painel(Model model, HttpSession session) {
-        getAlunoLogado(session);
+        Usuario aluno = getAlunoLogado(session);
         model.addAttribute("trilhas", trilhaService.listar());
+        model.addAttribute("inscricaoService", inscricaoService);
+        model.addAttribute("alunoId", aluno.getId());
         return "aluno-painel";
     }
 
     @PostMapping("/trilhas/{trilhaId}/inscrever")
-    public String inscrever(@PathVariable Long trilhaId, HttpSession session) {
+    public String inscrever(@PathVariable Long trilhaId, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario aluno = getAlunoLogado(session);
-        inscricaoService.inscrever(aluno.getId(), trilhaId);
-        return "redirect:/aluno/meus-cursos";
+        try {
+            inscricaoService.inscrever(aluno.getId(), trilhaId);
+            redirectAttributes.addFlashAttribute("sucesso", "Inscrição realizada com sucesso!");
+            return "redirect:/aluno/meus-cursos";
+        } catch (RuntimeException e) {
+            // NOVO: Tratamento de erro de inscrição duplicada
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            return "redirect:/aluno/dashboard";
+        }
     }
 
     // Página 2 - Meus cursos
@@ -72,10 +82,19 @@ public class AlunoController {
     }
 
     @PostMapping("/perfil")
-    public String salvarPerfil(Usuario form, HttpSession session) {
+    public String salvarPerfil(Usuario form, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario aluno = getAlunoLogado(session);
-        form.setRole("ALUNO");
-        usuarioService.atualizar(aluno.getId(), form);
-        return "redirect:/aluno/perfil";
+        try {
+            form.setRole("ALUNO");
+            Usuario atualizado = usuarioService.atualizar(aluno.getId(), form);
+            // Atualiza a sessão com os dados atualizados
+            session.setAttribute("usuarioLogado", atualizado);
+            redirectAttributes.addFlashAttribute("sucesso", "Perfil atualizado com sucesso!");
+            return "redirect:/aluno/perfil";
+        } catch (RuntimeException e) {
+            // NOVO: Tratamento de erro ao atualizar perfil
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            return "redirect:/aluno/perfil";
+        }
     }
 }

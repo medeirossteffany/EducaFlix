@@ -17,6 +17,11 @@ public class UsuarioService {
     }
 
     public Usuario criar(@Valid Usuario u) {
+        // Verifica se já existe um usuário com este email
+        Usuario existente = repo.findByEmail(u.getEmail());
+        if (existente != null) {
+            throw new RuntimeException("Email já cadastrado");
+        }
         return repo.save(u);
     }
 
@@ -31,10 +36,26 @@ public class UsuarioService {
 
     public Usuario atualizar(Long id, @Valid Usuario dados) {
         Usuario u = buscarPorId(id);
+
+        // CORRIGIDO: Verifica se o email está sendo alterado e se já existe
+        if (!u.getEmail().equals(dados.getEmail())) {
+            Usuario existente = repo.findByEmail(dados.getEmail());
+            if (existente != null && !existente.getId().equals(id)) {
+                throw new RuntimeException("Email já cadastrado");
+            }
+        }
+
         u.setNome(dados.getNome());
         u.setEmail(dados.getEmail());
-        u.setSenha(dados.getSenha());
-        u.setRole(dados.getRole());
+
+        // CORRIGIDO: Só atualiza a senha se foi fornecida uma nova
+        if (dados.getSenha() != null && !dados.getSenha().isEmpty()) {
+            u.setSenha(dados.getSenha());
+        }
+
+        // Role não deve ser alterado no perfil
+        // u.setRole(dados.getRole());
+
         u.setCpf(dados.getCpf());
         u.setAreaInteresse(dados.getAreaInteresse());
         u.setAreaAtuacao(dados.getAreaAtuacao());

@@ -36,6 +36,20 @@
         .edit-form.active {
             display: block;
         }
+        .error-message {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
     </style>
     <script>
         function toggleEdit(id) {
@@ -62,6 +76,12 @@
     <a href="/login">Sair</a>
 </nav>
 <hr>
+
+<!-- Mensagem de erro -->
+<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+
+<!-- Mensagem de sucesso -->
+<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
 
 <h2>Criar nova trilha</h2>
 <form method="post" action="/profissional/trilhas">

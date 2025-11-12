@@ -30,6 +30,20 @@
             color: #4CAF50;
             font-weight: bold;
         }
+        .error-message {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .success-message {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -41,6 +55,12 @@
     <a href="/login">Sair</a>
 </nav>
 <hr>
+
+<!-- Mensagem de erro -->
+<div class="error-message" th:if="${erro}" th:text="${erro}"></div>
+
+<!-- Mensagem de sucesso -->
+<div class="success-message" th:if="${sucesso}" th:text="${sucesso}"></div>
 
 <h2>Minhas inscrições</h2>
 <table>

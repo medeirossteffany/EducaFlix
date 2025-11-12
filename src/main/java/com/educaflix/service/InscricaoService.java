@@ -9,6 +9,7 @@ import com.educaflix.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InscricaoService {
@@ -36,6 +37,12 @@ public class InscricaoService {
         Trilha trilha = trilhaRepo.findById(trilhaId)
                 .orElseThrow(() -> new RuntimeException("Trilha não encontrada"));
 
+        // NOVO: Verifica se já existe inscrição
+        Optional<Inscricao> inscricaoExistente = repo.findByAlunoIdAndTrilhaId(alunoId, trilhaId);
+        if (inscricaoExistente.isPresent()) {
+            throw new RuntimeException("Você já está inscrito nesta trilha");
+        }
+
         Inscricao i = new Inscricao();
         i.setAluno(aluno);
         i.setTrilha(trilha);
@@ -62,10 +69,14 @@ public class InscricaoService {
         return repo.findByTrilhaIn(trilhas);
     }
 
-    // NOVO: Método para remover inscrição
     public void remover(Long inscricaoId) {
         Inscricao i = repo.findById(inscricaoId)
                 .orElseThrow(() -> new RuntimeException("Inscrição não encontrada"));
         repo.delete(i);
+    }
+
+    // NOVO: Verifica se aluno já está inscrito
+    public boolean jaInscrito(Long alunoId, Long trilhaId) {
+        return repo.findByAlunoIdAndTrilhaId(alunoId, trilhaId).isPresent();
     }
 }

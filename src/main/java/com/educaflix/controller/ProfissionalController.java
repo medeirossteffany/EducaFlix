@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/profissional")
@@ -43,27 +44,44 @@ public class ProfissionalController {
     }
 
     @PostMapping("/trilhas")
-    public String criarTrilha(Trilha trilha, HttpSession session) {
+    public String criarTrilha(Trilha trilha, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario prof = getProfLogado(session);
-        trilha.setProfissionalId(prof.getId());
-        trilhaService.criar(trilha);
-        return "redirect:/profissional/dashboard";
+        try {
+            trilha.setProfissionalId(prof.getId());
+            trilhaService.criar(trilha);
+            redirectAttributes.addFlashAttribute("sucesso", "Trilha criada com sucesso!");
+            return "redirect:/profissional/dashboard";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao criar trilha: " + e.getMessage());
+            return "redirect:/profissional/dashboard";
+        }
     }
 
-    // NOVO: Endpoint para editar trilha
     @PostMapping("/trilhas/{id}/editar")
-    public String editarTrilha(@PathVariable Long id, Trilha trilha, HttpSession session) {
+    public String editarTrilha(@PathVariable Long id, Trilha trilha, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario prof = getProfLogado(session);
-        trilha.setProfissionalId(prof.getId());
-        trilhaService.atualizar(id, trilha);
-        return "redirect:/profissional/dashboard";
+        try {
+            trilha.setProfissionalId(prof.getId());
+            trilhaService.atualizar(id, trilha);
+            redirectAttributes.addFlashAttribute("sucesso", "Trilha atualizada com sucesso!");
+            return "redirect:/profissional/dashboard";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao atualizar trilha: " + e.getMessage());
+            return "redirect:/profissional/dashboard";
+        }
     }
 
     @PostMapping("/trilhas/{id}/excluir")
-    public String excluirTrilha(@PathVariable Long id, HttpSession session) {
+    public String excluirTrilha(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         getProfLogado(session);
-        trilhaService.remover(id);
-        return "redirect:/profissional/dashboard";
+        try {
+            trilhaService.remover(id);
+            redirectAttributes.addFlashAttribute("sucesso", "Trilha excluída com sucesso!");
+            return "redirect:/profissional/dashboard";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir trilha: " + e.getMessage());
+            return "redirect:/profissional/dashboard";
+        }
     }
 
     // Página 2 - Alunos inscritos
@@ -74,12 +92,17 @@ public class ProfissionalController {
         return "prof-alunos-inscritos";
     }
 
-    // NOVO: Endpoint para remover inscrição de aluno
     @PostMapping("/inscricoes/{id}/remover")
-    public String removerInscricao(@PathVariable Long id, HttpSession session) {
+    public String removerInscricao(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
         getProfLogado(session);
-        inscricaoService.remover(id);
-        return "redirect:/profissional/alunos-inscritos";
+        try {
+            inscricaoService.remover(id);
+            redirectAttributes.addFlashAttribute("sucesso", "Inscrição removida com sucesso!");
+            return "redirect:/profissional/alunos-inscritos";
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao remover inscrição: " + e.getMessage());
+            return "redirect:/profissional/alunos-inscritos";
+        }
     }
 
     // Página 3 - Perfil
@@ -91,10 +114,19 @@ public class ProfissionalController {
     }
 
     @PostMapping("/perfil")
-    public String salvarPerfil(Usuario form, HttpSession session) {
+    public String salvarPerfil(Usuario form, HttpSession session, RedirectAttributes redirectAttributes) {
         Usuario prof = getProfLogado(session);
-        form.setRole("PROFISSIONAL");
-        usuarioService.atualizar(prof.getId(), form);
-        return "redirect:/profissional/perfil";
+        try {
+            form.setRole("PROFISSIONAL");
+            Usuario atualizado = usuarioService.atualizar(prof.getId(), form);
+            // Atualiza a sessão com os dados atualizados
+            session.setAttribute("usuarioLogado", atualizado);
+            redirectAttributes.addFlashAttribute("sucesso", "Perfil atualizado com sucesso!");
+            return "redirect:/profissional/perfil";
+        } catch (RuntimeException e) {
+            // NOVO: Tratamento de erro ao atualizar perfil
+            redirectAttributes.addFlashAttribute("erro", e.getMessage());
+            return "redirect:/profissional/perfil";
+        }
     }
 }
