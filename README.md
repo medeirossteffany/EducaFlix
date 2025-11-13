@@ -93,12 +93,20 @@ Aplicação web desenvolvida em **Java Spring Boot**, seguindo o padrão **MVC**
 
 ### Autenticação
 
-#### Login
+#### Login como Aluno
 ```bash
 curl -X POST http://localhost:8080/login \
 -H "Content-Type: application/x-www-form-urlencoded" \
--d "email=aluno@email.com&senha=senha123" \
--c cookies.txt
+-d "email=maria.silva@email.com&senha=senha123" \
+-c cookies_aluno.txt
+```
+
+#### Login como Profissional
+```bash
+curl -X POST http://localhost:8080/login \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "email=joao.santos@email.com&senha=senha456" \
+-c cookies_prof.txt
 ```
 
 ---
@@ -110,19 +118,19 @@ curl -X POST http://localhost:8080/login \
 
 **Payload (Form Data):**
 ```
-nome=Novo Aluno
-email=novo.aluno@email.com
+nome=Maria Silva
+email=maria.silva@email.com
 senha=senha123
-cpf=12345678909
+cpf=11144477735
 role=ALUNO
-areaInteresse=Tecnologia
+areaInteresse=Inteligência Artificial
 ```
 
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/cadastro \
 -H "Content-Type: application/x-www-form-urlencoded" \
--d "nome=Novo Aluno&email=novo.aluno@email.com&senha=senha123&cpf=12345678909&role=ALUNO&areaInteresse=Tecnologia"
+-d "nome=Maria Silva&email=maria.silva@email.com&senha=senha123&cpf=11144477735&role=ALUNO&areaInteresse=Inteligência Artificial"
 ```
 
 #### Cadastro de Profissional
@@ -130,20 +138,20 @@ curl -X POST http://localhost:8080/cadastro \
 
 **Payload (Form Data):**
 ```
-nome=Novo Profissional
-email=novo.prof@email.com
+nome=João Santos
+email=joao.santos@email.com
 senha=senha456
-cpf=98765432101
+cpf=52998224725
 role=PROFISSIONAL
 areaAtuacao=Engenharia de Software
-codigoProfessor=PROF123
+codigoProfessor=PROF001
 ```
 
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/cadastro \
 -H "Content-Type: application/x-www-form-urlencoded" \
--d "nome=Novo Profissional&email=novo.prof@email.com&senha=senha456&cpf=98765432101&role=PROFISSIONAL&areaAtuacao=Engenharia de Software&codigoProfessor=PROF123"
+-d "nome=João Santos&email=joao.santos@email.com&senha=senha456&cpf=52998224725&role=PROFISSIONAL&areaAtuacao=Engenharia de Software&codigoProfessor=PROF001"
 ```
 
 ---
@@ -155,10 +163,10 @@ curl -X POST http://localhost:8080/cadastro \
 
 **Payload (Form Data):**
 ```
-titulo=Introdução ao Spring Boot
-descricao=Aprenda os fundamentos do Spring Boot
-categoria=Desenvolvimento
-cargaHoraria=40
+titulo=Fundamentos de Python
+descricao=Aprenda Python do zero até o avançado
+categoria=Programação
+cargaHoraria=60
 nivel=Iniciante
 ```
 
@@ -166,8 +174,8 @@ nivel=Iniciante
 ```bash
 curl -X POST http://localhost:8080/profissional/trilhas \
 -H "Content-Type: application/x-www-form-urlencoded" \
--d "titulo=Introdução ao Spring Boot&descricao=Aprenda os fundamentos do Spring Boot&categoria=Desenvolvimento&cargaHoraria=40&nivel=Iniciante" \
--b cookies.txt
+-d "titulo=Fundamentos de Python&descricao=Aprenda Python do zero até o avançado&categoria=Programação&cargaHoraria=60&nivel=Iniciante" \
+-b cookies_prof.txt
 ```
 
 #### Editar Trilha
@@ -175,19 +183,19 @@ curl -X POST http://localhost:8080/profissional/trilhas \
 
 **Payload (Form Data):**
 ```
-titulo=Spring Boot Avançado
-descricao=Tópicos avançados em Spring Boot
-categoria=Desenvolvimento
-cargaHoraria=60
-nivel=Avançado
+titulo=Python Completo 2025
+descricao=Curso completo de Python atualizado para 2025
+categoria=Programação
+cargaHoraria=80
+nivel=Intermediário
 ```
 
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/profissional/trilhas/1/editar \
 -H "Content-Type: application/x-www-form-urlencoded" \
--d "titulo=Spring Boot Avançado&descricao=Tópicos avançados em Spring Boot&categoria=Desenvolvimento&cargaHoraria=60&nivel=Avançado" \
--b cookies.txt
+-d "titulo=Python Completo 2025&descricao=Curso completo de Python atualizado para 2025&categoria=Programação&cargaHoraria=80&nivel=Intermediário" \
+-b cookies_prof.txt
 ```
 
 #### Excluir Trilha
@@ -196,7 +204,7 @@ curl -X POST http://localhost:8080/profissional/trilhas/1/editar \
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/profissional/trilhas/1/excluir \
--b cookies.txt
+-b cookies_prof.txt
 ```
 
 ---
@@ -209,7 +217,7 @@ curl -X POST http://localhost:8080/profissional/trilhas/1/excluir \
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/aluno/trilhas/1/inscrever \
--b cookies.txt
+-b cookies_aluno.txt
 ```
 
 #### Finalizar Curso
@@ -218,8 +226,27 @@ curl -X POST http://localhost:8080/aluno/trilhas/1/inscrever \
 **Exemplo cURL:**
 ```bash
 curl -X POST http://localhost:8080/aluno/inscricoes/1/finalizar \
--b cookies.txt
+-b cookies_aluno.txt
 ```
+
+---
+
+### Testando com Postman/Insomnia
+
+1. **Faça login primeiro:**
+   - Método: `POST`
+   - URL: `http://localhost:8080/login`
+   - Body: `x-www-form-urlencoded` com `email` e `senha`
+   - O cookie `JSESSIONID` será armazenado automaticamente
+
+2. **Use os endpoints acima:**
+   - Configure o método e URL
+   - Adicione os campos no Body como `x-www-form-urlencoded`
+   - O cookie de sessão será enviado automaticamente
+
+**Observação:** Os CPFs utilizados nos exemplos são válidos segundo o algoritmo de validação brasileiro:
+- **Aluno:** 111.444.777-35 (CPF: 11144477735)
+- **Profissional:** 529.982.247-25 (CPF: 52998224725)
 
 ## ▶️ Como Executar
 
