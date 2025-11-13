@@ -1,6 +1,6 @@
 # 🎓 EducaFlix - Plataforma de Upskilling/Reskilling para 2030+
 
-![Tela do Sistema](src/main/resources/static/capturadetela)
+![Tela do Sistema](src/main/resources/static/css/capturadetela.png) 
 
 
 Aplicação web desenvolvida em **Java Spring Boot**, seguindo o padrão **MVC**, utilizando **JPA** para persistência e **Thymeleaf** para renderização de interfaces. O sistema tem como objetivo gerenciar **trilhas de aprendizagem** e apoiar o **desenvolvimento de competências para o futuro do trabalho**, integrando a **Global Solution 2025 da FIAP**, cujo tema é **“O Futuro do Trabalho”**, com foco em **upskilling** e **reskilling** para preparar profissionais para as demandas do mercado até 2030 e além.
