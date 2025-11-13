@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar" id="navbar">
     <a href="/aluno/dashboard" class="navbar-brand">EDUCAFLIX</a>
     <div class="navbar-menu">
@@ -19,16 +18,13 @@
     </div>
 </nav>
 
-<!-- Conteúdo Principal -->
 <div class="main-content">
 
-    <!-- Mensagens -->
     <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
     <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
     <h2 class="section-title mb-20">📚 Meus Cursos</h2>
 
-    <!-- Grid de Cursos -->
     <div class="cards-grid">
         <div class="card" th:each="inscricao : ${inscricoes}">
             <div class="card-header blue">
@@ -50,7 +46,6 @@
                     </span>
                 </div>
 
-                <!-- Botão de finalizar -->
                 <th:block th:if="${inscricao.status == 'EM_ANDAMENTO'}">
                     <form method="post" th:action="@{'/aluno/inscricoes/' + ${inscricao.id} + '/finalizar'}">
                         <button type="submit" class="btn btn-success" style="width: 100%;">
@@ -67,7 +62,6 @@
         </div>
     </div>
 
-    <!-- Estado vazio -->
     <div class="empty-state" th:if="${inscricoes == null || inscricoes.isEmpty( )}">
         <div class="empty-state-icon">📚</div>
         <p class="empty-state-text">Você ainda não está inscrito em nenhum curso.</p>

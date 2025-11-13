@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Navbar -->
 <nav class="navbar" id="navbar">
   <a href="/profissional/dashboard" class="navbar-brand">EDUCAFLIX</a>
   <div class="navbar-menu">
@@ -19,16 +18,13 @@
   </div>
 </nav>
 
-<!-- Conteúdo Principal -->
 <div class="main-content">
 
-  <!-- Mensagens -->
   <div class="alert alert-error" th:if="${erro}" th:text="${erro}"></div>
   <div class="alert alert-success" th:if="${sucesso}" th:text="${sucesso}"></div>
 
   <h2 class="section-title mb-20">👤 Meu Perfil</h2>
 
-  <!-- Formulário de Edição -->
   <div class="section">
     <div class="section-header">Editar Informações</div>
 
@@ -75,7 +71,6 @@
     </form>
   </div>
 
-  <!-- Informações da Conta -->
   <div class="section">
     <div class="section-header">📊 Estatísticas</div>
 
