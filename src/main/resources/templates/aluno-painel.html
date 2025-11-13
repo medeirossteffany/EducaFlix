@@ -36,8 +36,8 @@
                     <label class="form-label">Categoria</label>
                     <select name="categoria" class="filter-select">
                         <option value="">Todas</option>
-                        <option th:each="cat : ${trilhas.stream().map(t -> t.categoria).distinct().toList()}"
-                                th:value="${cat}" th:text="${cat}"
+                        <option th:each="cat : ${categorias}"
+                                 th:value="${cat}" th:text="${cat}"
                                 th:selected="${categoria == cat}"></option>
                     </select>
                 </div>

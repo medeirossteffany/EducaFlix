@@ -5,217 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - EducaFlix</title>
   <link rel="stylesheet" href="/css/style.css">
-  <style>
-    body {
-      background: linear-gradient(135deg, #141e30, #243b55);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: '';
-      position: absolute;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(229,9,20,0.08) 0%, transparent 70%);
-      animation: rotate 30s linear infinite;
-    }
-
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .cadastro-container {
-      background: rgba(20, 20, 20, 0.95);
-      border-radius: 8px;
-      padding: 50px 60px;
-      width: 550px;
-      max-width: 95%;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-      position: relative;
-      z-index: 1;
-    }
-
-    .cadastro-logo {
-      font-size: 42px;
-      font-weight: bold;
-      color: #e50914;
-      text-align: center;
-      margin-bottom: 30px;
-      letter-spacing: 3px;
-      text-shadow: 0 0 20px rgba(229,9,20,0.5);
-    }
-
-    .cadastro-title {
-      color: #ffffff;
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    .cadastro-form-group {
-      margin-bottom: 18px;
-    }
-
-    .cadastro-label {
-      display: block;
-      color: #b3b3b3;
-      font-size: 14px;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .cadastro-input,
-    .cadastro-select {
-      width: 100%;
-      padding: 14px 18px;
-      background: #333333;
-      border: none;
-      border-radius: 4px;
-      color: #ffffff;
-      font-size: 15px;
-      transition: all 0.3s ease;
-    }
-
-    .cadastro-input:focus,
-    .cadastro-select:focus {
-      outline: none;
-      background: #454545;
-      box-shadow: 0 0 0 2px #e50914;
-    }
-
-    .cadastro-input::placeholder {
-      color: #737373;
-    }
-
-    .cadastro-select {
-      cursor: pointer;
-    }
-
-    .cadastro-select option {
-      background: #333333;
-      color: #ffffff;
-    }
-
-    .cadastro-btn {
-      width: 100%;
-      padding: 16px;
-      background: #e50914;
-      color: #ffffff;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 25px;
-    }
-
-    .cadastro-btn:hover {
-      background: #f40612;
-      box-shadow: 0 4px 15px rgba(229,9,20,0.4);
-    }
-
-    .cadastro-link {
-      text-align: center;
-      margin-top: 25px;
-      color: #8c8c8c;
-      font-size: 14px;
-    }
-
-    .cadastro-link a {
-      color: #ffffff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    .cadastro-link a:hover {
-      color: #e50914;
-    }
-
-    .cadastro-alert-error {
-      background: rgba(229,9,20,0.2);
-      border-left: 4px solid #e50914;
-      color: #ffffff;
-      padding: 15px 20px;
-      border-radius: 4px;
-      margin-bottom: 25px;
-      font-size: 14px;
-    }
-  </style>
 </head>
-<body>
+<body class="auth-page">
 
-<div class="cadastro-container">
-  <div class="cadastro-logo">EDUCAFLIX</div>
-  <h2 class="cadastro-title">Criar Conta</h2>
+<div class="auth-container auth-container-wide">
+  <div class="auth-logo">EDUCAFLIX</div>
+  <h2 class="auth-title">Criar Conta</h2>
 
-  <div class="cadastro-alert-error" th:if="${erro}" th:text="${erro}"></div>
+  <div class="auth-alert-error" th:if="${erro}" th:text="${erro}"></div>
 
   <form method="post" action="/cadastro">
-    <div class="cadastro-form-group">
-      <label class="cadastro-label">Nome Completo</label>
-      <input type="text" name="nome" class="cadastro-input" required
+    <div class="auth-form-group">
+      <label class="auth-label">Nome Completo</label>
+      <input type="text" name="nome" class="auth-input" required
              th:value="${nome}" placeholder="Seu nome completo">
     </div>
 
-    <div class="cadastro-form-group">
-      <label class="cadastro-label">Email</label>
-      <input type="email" name="email" class="cadastro-input" required
+    <div class="auth-form-group">
+      <label class="auth-label">Email</label>
+      <input type="email" name="email" class="auth-input" required
              th:value="${email}" placeholder="seu@email.com">
     </div>
 
-    <div class="cadastro-form-group">
-      <label class="cadastro-label">CPF</label>
-      <input type="text" name="cpf" class="cadastro-input" required
+    <div class="auth-form-group">
+      <label class="auth-label">CPF</label>
+      <input type="text" name="cpf" class="auth-input" required
              th:value="${cpf}" placeholder="000.000.000-00" maxlength="14">
     </div>
 
-    <div class="cadastro-form-group">
-      <label class="cadastro-label">Senha</label>
-      <input type="password" name="senha" class="cadastro-input" required
+    <div class="auth-form-group">
+      <label class="auth-label">Senha</label>
+      <input type="password" name="senha" class="auth-input" required
              placeholder="Mínimo 6 caracteres">
     </div>
 
-    <div class="cadastro-form-group">
-      <label class="cadastro-label">Tipo de Conta</label>
-      <select name="role" class="cadastro-select" required id="roleSelect">
+    <div class="auth-form-group">
+      <label class="auth-label">Tipo de Conta</label>
+      <select name="role" class="auth-select" required id="roleSelect">
         <option value="">Selecione...</option>
         <option value="ALUNO" th:selected="${role == 'ALUNO'}">Aluno</option>
         <option value="PROFISSIONAL" th:selected="${role == 'PROFISSIONAL'}">Profissional</option>
       </select>
     </div>
 
-    <div class="cadastro-form-group" id="campoAreaInteresse" style="display: none;">
-      <label class="cadastro-label">Área de Interesse</label>
-      <input type="text" name="areaInteresse" class="cadastro-input"
+    <div class="auth-form-group" id="campoAreaInteresse" style="display: none;">
+      <label class="auth-label">Área de Interesse</label>
+      <input type="text" name="areaInteresse" class="auth-input"
              th:value="${areaInteresse}" placeholder="Ex: Programação, Design...">
     </div>
 
-    <div class="cadastro-form-group" id="campoAreaAtuacao" style="display: none;">
-      <label class="cadastro-label">Área de Atuação</label>
-      <input type="text" name="areaAtuacao" class="cadastro-input"
+    <div class="auth-form-group" id="campoAreaAtuacao" style="display: none;">
+      <label class="auth-label">Área de Atuação</label>
+      <input type="text" name="areaAtuacao" class="auth-input"
              th:value="${areaAtuacao}" placeholder="Ex: Desenvolvedor, Professor...">
     </div>
 
-    <div class="cadastro-form-group" id="campoCodigoProfessor" style="display: none;">
-      <label class="cadastro-label">Código do Professor</label>
-      <input type="text" name="codigoProfessor" class="cadastro-input"
+    <div class="auth-form-group" id="campoCodigoProfessor" style="display: none;">
+      <label class="auth-label">Código do Professor</label>
+      <input type="text" name="codigoProfessor" class="auth-input"
              th:value="${codigoProfessor}" placeholder="Código único">
     </div>
 
-    <button type="submit" class="cadastro-btn">Cadastrar</button>
+    <button type="submit" class="auth-btn">Cadastrar</button>
   </form>
 
-  <div class="cadastro-link">
+  <div class="auth-link">
     Já tem uma conta? <a href="/login">Faça login aqui</a>
   </div>
 </div>

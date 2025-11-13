@@ -100,13 +100,21 @@ public class ProfissionalController {
                     .collect(Collectors.toList());
         }
 
+        List<String> categorias = trilhaService.listarPorProfissional(prof.getId()).stream()
+                .map(Trilha::getCategoria)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
         model.addAttribute("trilhas", trilhas);
+        model.addAttribute("categorias", categorias);  // ← ADICIONAR ESTA LINHA
         model.addAttribute("search", search);
         model.addAttribute("categoria", categoria);
         model.addAttribute("nivel", nivel);
 
         return "prof-painel";
     }
+
 
     /**
      * Cria uma nova trilha.
@@ -240,13 +248,21 @@ public class ProfissionalController {
                     .collect(Collectors.toList());
         }
 
+        List<String> trilhas = inscricaoService.listarPorProfissional(prof.getId()).stream()
+                .map(i -> i.getTrilha().getTitulo())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
         model.addAttribute("inscricoes", inscricoes);
+        model.addAttribute("trilhas", trilhas);  // ← ADICIONAR ESTA LINHA
         model.addAttribute("search", search);
         model.addAttribute("trilha", trilha);
         model.addAttribute("status", status);
 
         return "prof-alunos-inscritos";
     }
+
 
     /**
      * Remove uma inscrição de aluno.

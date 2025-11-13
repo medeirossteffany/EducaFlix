@@ -99,7 +99,14 @@ public class AlunoController {
                     .collect(Collectors.toList());
         }
 
+        List<String> categorias = trilhaService.listar().stream()
+                .map(Trilha::getCategoria)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+
         model.addAttribute("trilhas", trilhas);
+        model.addAttribute("categorias", categorias);  // ← ADICIONAR ESTA LINHA
         model.addAttribute("inscricaoService", inscricaoService);
         model.addAttribute("alunoId", aluno.getId());
         model.addAttribute("search", search);
@@ -108,6 +115,7 @@ public class AlunoController {
 
         return "aluno-painel";
     }
+
 
     /**
      * Inscreve o aluno em uma trilha.

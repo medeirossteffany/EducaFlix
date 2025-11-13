@@ -36,7 +36,7 @@
           <label class="form-label">Trilha</label>
           <select name="trilha" class="filter-select">
             <option value="">Todas</option>
-            <option th:each="t : ${inscricoes.stream().map(i -> i.trilha.titulo).distinct().toList()}"
+            <option th:each="t : ${trilhas}"
                     th:value="${t}" th:text="${t}"
                     th:selected="${trilha == t}"></option>
           </select>

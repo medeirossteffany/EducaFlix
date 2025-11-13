@@ -2,7 +2,15 @@ package com.educaflix.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.util.List;
 
+/**
+ * Entidade que representa uma trilha de aprendizado no sistema EducaFlix.
+ * Criada por profissionais e disponível para inscrição de alunos.
+ *
+ * @author EducaFlix Team
+ * @version 1.0
+ */
 @Entity
 public class Trilha {
 
@@ -26,8 +34,10 @@ public class Trilha {
     @NotBlank(message = "Nível é obrigatório")
     private String nivel;
 
-    // Quem criou (profissional)
     private Long profissionalId;
+
+    @OneToMany(mappedBy = "trilha", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Inscricao> inscricoes;
 
     public Long getId() {
         return id;
@@ -79,5 +89,13 @@ public class Trilha {
 
     public void setProfissionalId(Long profissionalId) {
         this.profissionalId = profissionalId;
+    }
+
+    public List<Inscricao> getInscricoes() {
+        return inscricoes;
+    }
+
+    public void setInscricoes(List<Inscricao> inscricoes) {
+        this.inscricoes = inscricoes;
     }
 }
