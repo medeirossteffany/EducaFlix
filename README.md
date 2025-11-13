@@ -89,6 +89,138 @@ Aplicação web desenvolvida em **Java Spring Boot**, seguindo o padrão **MVC**
 - ✅ Validação de inscrição duplicada.
 - ✅ Tratamento de erros com mensagens amigáveis.
 
+## 🧪 Testes de Endpoints
+
+### Autenticação
+
+#### Login
+```bash
+curl -X POST http://localhost:8080/login \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "email=aluno@email.com&senha=senha123" \
+-c cookies.txt
+```
+
+---
+
+### Cadastro de Usuários
+
+#### Cadastro de Aluno
+**URL:** `POST http://localhost:8080/cadastro`
+
+**Payload (Form Data):**
+```
+nome=Novo Aluno
+email=novo.aluno@email.com
+senha=senha123
+cpf=12345678909
+role=ALUNO
+areaInteresse=Tecnologia
+```
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/cadastro \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "nome=Novo Aluno&email=novo.aluno@email.com&senha=senha123&cpf=12345678909&role=ALUNO&areaInteresse=Tecnologia"
+```
+
+#### Cadastro de Profissional
+**URL:** `POST http://localhost:8080/cadastro`
+
+**Payload (Form Data):**
+```
+nome=Novo Profissional
+email=novo.prof@email.com
+senha=senha456
+cpf=98765432101
+role=PROFISSIONAL
+areaAtuacao=Engenharia de Software
+codigoProfessor=PROF123
+```
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/cadastro \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "nome=Novo Profissional&email=novo.prof@email.com&senha=senha456&cpf=98765432101&role=PROFISSIONAL&areaAtuacao=Engenharia de Software&codigoProfessor=PROF123"
+```
+
+---
+
+### Gerenciamento de Trilhas (Profissional)
+
+#### Criar Trilha
+**URL:** `POST http://localhost:8080/profissional/trilhas`
+
+**Payload (Form Data):**
+```
+titulo=Introdução ao Spring Boot
+descricao=Aprenda os fundamentos do Spring Boot
+categoria=Desenvolvimento
+cargaHoraria=40
+nivel=Iniciante
+```
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/profissional/trilhas \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "titulo=Introdução ao Spring Boot&descricao=Aprenda os fundamentos do Spring Boot&categoria=Desenvolvimento&cargaHoraria=40&nivel=Iniciante" \
+-b cookies.txt
+```
+
+#### Editar Trilha
+**URL:** `POST http://localhost:8080/profissional/trilhas/{id}/editar`
+
+**Payload (Form Data):**
+```
+titulo=Spring Boot Avançado
+descricao=Tópicos avançados em Spring Boot
+categoria=Desenvolvimento
+cargaHoraria=60
+nivel=Avançado
+```
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/profissional/trilhas/1/editar \
+-H "Content-Type: application/x-www-form-urlencoded" \
+-d "titulo=Spring Boot Avançado&descricao=Tópicos avançados em Spring Boot&categoria=Desenvolvimento&cargaHoraria=60&nivel=Avançado" \
+-b cookies.txt
+```
+
+#### Excluir Trilha
+**URL:** `POST http://localhost:8080/profissional/trilhas/{id}/excluir`
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/profissional/trilhas/1/excluir \
+-b cookies.txt
+```
+
+---
+
+### Inscrições (Aluno)
+
+#### Inscrever-se em Trilha
+**URL:** `POST http://localhost:8080/aluno/trilhas/{trilhaId}/inscrever`
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/aluno/trilhas/1/inscrever \
+-b cookies.txt
+```
+
+#### Finalizar Curso
+**URL:** `POST http://localhost:8080/aluno/inscricoes/{id}/finalizar`
+
+**Exemplo cURL:**
+```bash
+curl -X POST http://localhost:8080/aluno/inscricoes/1/finalizar \
+-b cookies.txt
+```
+
 ## ▶️ Como Executar
 
 ### Pré-requisitos
@@ -99,7 +231,7 @@ Aplicação web desenvolvida em **Java Spring Boot**, seguindo o padrão **MVC**
 
 1. **Clone o repositório:**
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/medeirossteffany/EducaFlix.git
    cd EducaFlix
    ```
 
