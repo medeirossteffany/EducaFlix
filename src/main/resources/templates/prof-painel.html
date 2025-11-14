@@ -111,10 +111,11 @@
 
                 <div class="card-actions">
                     <a th:href="@{'/profissional/trilhas/' + ${trilha.id} + '/editar'}" class="btn-edit">✏️ Editar</a>
-                    <form method="post" th:action="@{'/profissional/trilhas/' + ${trilha.id} + '/excluir'}"
-                          style="flex: 1;" onsubmit="return confirm('Tem certeza que deseja excluir esta trilha?');">
-                        <button type="submit" class="btn-delete" style="width: 100%;">🗑️ Excluir</button>
-                    </form>
+                    <button type="button" class="btn-delete" style="flex: 1;"
+                            th:attr="data-trilha-id=${trilha.id}, data-trilha-nome=${trilha.titulo}"
+                            onclick="abrirModalExclusaoTrilha(this)">
+                        🗑️ Excluir
+                    </button>
                 </div>
             </div>
         </div>
@@ -127,7 +128,56 @@
 
 </div>
 
+<div class="modal-overlay" id="modalExclusaoTrilha">
+    <div class="modal-content">
+        <div class="modal-icon">⚠️</div>
+        <h2 class="modal-title">Confirmar Exclusão</h2>
+        <p class="modal-message">
+            Tem certeza que deseja excluir a trilha <span class="modal-highlight" id="modalTrilhaNome"></span>?
+            <br><br>
+            Esta ação não pode ser desfeita e todos os alunos inscritos serão removidos.
+        </p>
+        <div class="modal-actions">
+            <button type="button" class="modal-btn modal-btn-cancel" onclick="fecharModalExclusaoTrilha()">
+                Cancelar
+            </button>
+            <form method="post" id="formExclusaoTrilha" style="display: inline;">
+                <button type="submit" class="modal-btn modal-btn-confirm">
+                    Excluir
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="/js/navbar-scroll.js"></script>
+<script>
+    function abrirModalExclusaoTrilha(button) {
+        const trilhaId = button.getAttribute('data-trilha-id');
+        const trilhaNome = button.getAttribute('data-trilha-nome');
+        document.getElementById('modalTrilhaNome').textContent = trilhaNome;
+        document.getElementById('formExclusaoTrilha').action = '/profissional/trilhas/' + trilhaId + '/excluir';
+        document.getElementById('modalExclusaoTrilha').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function fecharModalExclusaoTrilha() {
+        document.getElementById('modalExclusaoTrilha').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    document.getElementById('modalExclusaoTrilha').addEventListener('click', function(e) {
+        if (e.target === this) {
+            fecharModalExclusaoTrilha();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            fecharModalExclusaoTrilha();
+        }
+    });
+</script>
 
 </body>
 </html>

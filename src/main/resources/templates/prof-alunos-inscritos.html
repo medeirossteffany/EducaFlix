@@ -84,11 +84,11 @@
                         </span>
         </td>
         <td>
-          <form method="post" th:action="@{'/profissional/inscricoes/' + ${inscricao.id} + '/remover'}"
-                style="display: inline-block;"
-                onsubmit="return confirm('Tem certeza que deseja remover a inscrição deste aluno?');">
-            <button type="submit" class="btn-remove">🗑️ Remover</button>
-          </form>
+          <button type="button" class="btn-remove"
+                  th:attr="data-inscricao-id=${inscricao.id}, data-aluno-nome=${inscricao.aluno.nome}, data-trilha-nome=${inscricao.trilha.titulo}"
+                  onclick="abrirModalRemoverInscricao(this)">
+            🗑️ Remover
+          </button>
         </td>
       </tr>
       </tbody>
@@ -103,7 +103,58 @@
 
 </div>
 
+<div class="modal-overlay" id="modalRemoverInscricao">
+  <div class="modal-content">
+    <div class="modal-icon">⚠️</div>
+    <h2 class="modal-title">Confirmar Remoção</h2>
+    <p class="modal-message">
+      Tem certeza que deseja remover a inscrição do aluno <span class="modal-highlight" id="modalAlunoNome"></span> da trilha <span class="modal-highlight" id="modalTrilhaNomeInscricao"></span>?
+      <br><br>
+      Esta ação não pode ser desfeita.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="modal-btn modal-btn-cancel" onclick="fecharModalRemoverInscricao()">
+        Cancelar
+      </button>
+      <form method="post" id="formRemoverInscricao" style="display: inline;">
+        <button type="submit" class="modal-btn modal-btn-confirm">
+          Remover
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script src="/js/navbar-scroll.js"></script>
+<script>
+  function abrirModalRemoverInscricao(button) {
+    const inscricaoId = button.getAttribute('data-inscricao-id');
+    const alunoNome = button.getAttribute('data-aluno-nome');
+    const trilhaNome = button.getAttribute('data-trilha-nome');
+    document.getElementById('modalAlunoNome').textContent = alunoNome;
+    document.getElementById('modalTrilhaNomeInscricao').textContent = trilhaNome;
+    document.getElementById('formRemoverInscricao').action = '/profissional/inscricoes/' + inscricaoId + '/remover';
+    document.getElementById('modalRemoverInscricao').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModalRemoverInscricao() {
+    document.getElementById('modalRemoverInscricao').classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  document.getElementById('modalRemoverInscricao').addEventListener('click', function(e) {
+    if (e.target === this) {
+      fecharModalRemoverInscricao();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      fecharModalRemoverInscricao();
+    }
+  });
+</script>
 
 </body>
 </html>
