@@ -31,7 +31,7 @@ VALUES (
            'Aprenda a usar IA generativa e automação inteligente para se preparar para as profissões que dominarão o mercado em 2030+.',
            'Tecnologia do Futuro',
            40,
-           'Intermediário',
+           'Intermediario',
            4
        );
 

@@ -71,48 +71,43 @@ public class ProfissionalController {
      * @return Nome da view do painel do profissional
      */
     @GetMapping("/dashboard")
-    public String painel(Model model,
-                         HttpSession session,
-                         @RequestParam(required = false) String search,
-                         @RequestParam(required = false) String categoria,
-                         @RequestParam(required = false) String nivel) {
-        Usuario prof = getProfLogado(session);
+        public String painel(Model model, HttpSession session,
+                             @RequestParam(required = false) String search,
+                             @RequestParam(required = false) String categoria,
+                             @RequestParam(required = false) String nivel) {
+            Usuario prof = getProfLogado(session);
 
-        List<Trilha> trilhas = trilhaService.listarPorProfissional(prof.getId());
+            List<Trilha> trilhas = trilhaService.listarPorProfissional(prof.getId());
 
-        if (search != null && !search.trim().isEmpty()) {
-            String searchLower = search.toLowerCase();
-            trilhas = trilhas.stream()
-                    .filter(t -> t.getTitulo().toLowerCase().contains(searchLower) ||
-                            t.getDescricao().toLowerCase().contains(searchLower))
-                    .collect(Collectors.toList());
-        }
+            if (search != null && !search.isBlank()) {
+                trilhas = trilhas.stream()
+                        .filter(t -> t.getTitulo().toLowerCase().contains(search.toLowerCase()) ||
+                                t.getDescricao().toLowerCase().contains(search.toLowerCase()))
+                        .collect(Collectors.toList());
+            }
 
-        if (categoria != null && !categoria.trim().isEmpty()) {
-            trilhas = trilhas.stream()
-                    .filter(t -> categoria.equals(t.getCategoria()))
-                    .collect(Collectors.toList());
-        }
+            if (categoria != null && !categoria.isBlank()) {
+                trilhas = trilhas.stream()
+                        .filter(t -> t.getCategoria().equalsIgnoreCase(categoria))
+                        .collect(Collectors.toList());
+            }
 
-        if (nivel != null && !nivel.trim().isEmpty()) {
-            trilhas = trilhas.stream()
-                    .filter(t -> nivel.equals(t.getNivel()))
-                    .collect(Collectors.toList());
-        }
+            if (nivel != null && !nivel.isBlank()) {
+                trilhas = trilhas.stream()
+                        .filter(t -> t.getNivel().equalsIgnoreCase(nivel))
+                        .collect(Collectors.toList());
+            }
 
-        List<String> categorias = trilhaService.listarPorProfissional(prof.getId()).stream()
-                .map(Trilha::getCategoria)
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
+            model.addAttribute("trilhas", trilhas);
+            model.addAttribute("search", search);
+            model.addAttribute("categoria", categoria);
+            model.addAttribute("nivel", nivel);
+            model.addAttribute("categorias", trilhas.stream()
+                    .map(Trilha::getCategoria)
+                    .distinct()
+                    .collect(Collectors.toList()));
 
-        model.addAttribute("trilhas", trilhas);
-        model.addAttribute("categorias", categorias);  // ← ADICIONAR ESTA LINHA
-        model.addAttribute("search", search);
-        model.addAttribute("categoria", categoria);
-        model.addAttribute("nivel", nivel);
-
-        return "prof-painel";
+            return "prof-painel";
     }
 
 
